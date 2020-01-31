@@ -1,2 +1,2 @@
-# silly
-Collaboration Platform
+# Silly
+Collaboration Networking Platform
