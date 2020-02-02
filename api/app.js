@@ -8,6 +8,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const generalHelpers = require('./helpers/general');
 
+const exposedRoutes = require('./routes/v1/exposed/')
 const adminRoutes = require('./routes/v1/adm/'); 
 const appRoutes = require('./routes/v1/app/'); 
 
@@ -52,6 +53,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use('/api/v1/', exposedRoutes);
 app.use('/api/v1/adm', adminRoutes);
 app.use('/api/v1/app', appRoutes);
 
