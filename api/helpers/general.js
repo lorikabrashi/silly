@@ -2,15 +2,15 @@ const fs = require('fs');
 const logger = require('morgan');
 
 module.exports = {
-    isEmptyObject: function (obj) {
+    isEmptyObject: (obj) => {
 		return !Object.keys(obj).length;
 	},
-    createFolder: function(dir) {
+    createFolder:(dir) => {
 		if (!fs.existsSync(dir)){
 			fs.mkdirSync(dir);
 		}
 	},
-    generateLogFile: function(app, path, type){
+    generateLogFile: (app, path, type) => {
         app.use(logger('common', {
             skip: function (req, res) {
                 if(type === 'errors') return res.statusCode < 400
@@ -18,5 +18,28 @@ module.exports = {
             }, 
             stream: fs.createWriteStream(path, { flags: 'a' })
         }));
+    },
+    excractFields: (resource, fields) => {
+        if(fields.length < 1) return resource;
+
+        const result = fields.reduce((acc, field) => {
+            acc[field] = resource[field];
+            return acc;
+        }, {});
+
+        return result;
+    },
+    getDefaultQueryParams: (params) => {
+        let { offset, limit, fields } = params;
+
+        offset = parseInt(offset);
+        limit = parseInt(limit);
+        limit = Math.min(limit, 50);
+
+        offset = offset ? offset : 0;
+        limit = limit ? limit : 50;
+        fields = fields ? fields.split(",") : [];
+
+        return { offset, limit, fields }
     }
 }

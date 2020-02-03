@@ -8,3 +8,4 @@ Collaboration Platform
     DB_URL = mongodb://localhost/silly
     SALT_ROUNDS = 10
     JWT_KEY = SILLY_JWT_KEY
+    REDIS_PORT = 6379

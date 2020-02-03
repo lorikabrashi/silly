@@ -5,14 +5,13 @@ const usersSchema = new mongoose.Schema({
     password: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     role: { type: String, enum: ['admin', 'user'], default: 'user' },
-    refresh_token: { type: String },
-    profile: { type: mongoose.Schema.Types.ObjectId, ref: 'profiles', required: false }
+    //profile: { type: mongoose.Schema.Types.ObjectId, ref: 'profiles' }
 }, {
 	timestamps: true	
 });
 
 const autoPopulateChildren = function (next) {
-	this.populate('profile');
+    this.populate('profile');
 	next();
 };
 

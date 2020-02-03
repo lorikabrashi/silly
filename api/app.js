@@ -4,24 +4,23 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const bodyParser = require('body-parser');
 const methodOverride = require('method-override');
-const mongoose = require('mongoose');
+
 const cors = require('cors');
 const generalHelpers = require('./helpers/general');
 
 const exposedRoutes = require('./routes/v1/exposed/')
 const adminRoutes = require('./routes/v1/adm/'); 
-const appRoutes = require('./routes/v1/app/'); 
-
-mongoose.connect(process.env.DB_URL, { useNewUrlParser: true }, function (err, res) {
-	if (err) {
-		console.log('Error establishing database connection: ' + err)
-	}
-	else {
-		console.log('Connected to DB...' + process.env.DB_URL)
-	}
-})
+const appRoutes = require('./routes/v1/app/');
 
 const app = express();
+
+/**
+ * 
+ * Staring redis client
+ */
+//const redis = require('redis');
+//const redisC = redis.createClient(process.env.REDIS_PORT);
+//redisC.set('someTest', 'lorik');
 
 /* create startup folders */
 generalHelpers.createFolder('./logs');
@@ -30,7 +29,6 @@ generalHelpers.createFolder('./public/uploads');
 /* create log files */
 generalHelpers.generateLogFile(app, './logs/stderr.log', 'errors' );
 generalHelpers.generateLogFile(app, './logs/stdout.log', 'others' );
-
 
 app.use(cors())
 app.use((req, res, next) =>{
@@ -56,5 +54,14 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/api/v1/', exposedRoutes);
 app.use('/api/v1/adm', adminRoutes);
 app.use('/api/v1/app', appRoutes);
+
+app.use((error, req, res, next) => {
+    /* console.log(error); */
+    res.status(error.statusCode || 500).json({
+        confirmation: 'Fail',
+        statusCode: error.statusCode || 500,
+        message: error.message
+    });
+});
 
 module.exports = app;
