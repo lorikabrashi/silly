@@ -1,4 +1,6 @@
 const usersModel = require('../models/users');
+const profilesModel = require('../models/profiles');
+
 const bcrypt = require('bcrypt');
 const  { excractFields, getDefaultQueryParams } = require('../helpers/general');
 const ErrorWithStatusCode = require('../helpers/ErrorWithStatusCode')
@@ -14,6 +16,7 @@ module.exports = userController = {
         
         return await userController.create(params);
     },
+    
     create: async (params) => {
         params = { username, password, email, role } = params;
 
@@ -23,6 +26,7 @@ module.exports = userController = {
        
         return await usersModel.create(params);
     },
+
     find: async (qParams = {}) => {
   
         qParams = getDefaultQueryParams(qParams);
@@ -31,5 +35,7 @@ module.exports = userController = {
         return Array.from(users).map(user => {
             return excractFields(user, qParams.fields);
         })
-    },  
+    },
+    
+      
 }

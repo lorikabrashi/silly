@@ -14,14 +14,6 @@ const appRoutes = require('./routes/v1/app/');
 
 const app = express();
 
-/**
- * 
- * Staring redis client
- */
-//const redis = require('redis');
-//const redisC = redis.createClient(process.env.REDIS_PORT);
-//redisC.set('someTest', 'lorik');
-
 /* create startup folders */
 generalHelpers.createFolder('./logs');
 generalHelpers.createFolder('./public/uploads');
@@ -56,7 +48,7 @@ app.use('/api/v1/adm', adminRoutes);
 app.use('/api/v1/app', appRoutes);
 
 app.use((error, req, res, next) => {
-    /* console.log(error); */
+    console.log(error);
     res.status(error.statusCode || 500).json({
         confirmation: 'Fail',
         statusCode: error.statusCode || 500,

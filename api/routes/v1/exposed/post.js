@@ -5,7 +5,7 @@ const controllers = require('../../../controllers/');
 
 router.post('/login', catchException(async (req, res) => {
 
-    let result = await controllers['auth'].login(req.body);
+    const result = await controllers['auth'].login(req.body);
     res.json({ 
         confirmation: 'Success', 
         results : result

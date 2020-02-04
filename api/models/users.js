@@ -5,7 +5,7 @@ const usersSchema = new mongoose.Schema({
     password: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     role: { type: String, enum: ['admin', 'user'], default: 'user' },
-    //profile: { type: mongoose.Schema.Types.ObjectId, ref: 'profiles' }
+    profile: { type: mongoose.Schema.Types.ObjectId, ref: 'profiles' }
 }, {
 	timestamps: true	
 });
