@@ -11,20 +11,7 @@ router.get('/', catchException(auth.app.validateAccessToken), catchException(asy
 	});
 }));
 
-router.get('/new-access-token', catchException(auth.app.validateRefreshToken), catchException(async (req, res) => {
-    const result = await controllers['auth'].generateNewAccessToken(req.decoded);
-    res.json({ 
-        confirmation: 'Success', 
-        results: result
-    });
-}));
 
-router.get('/sign-out', catchException(auth.app.validateAccessToken), catchException(async (req, res) => {
-    const result = await controllers['auth'].logout(req.decoded._id);
-     res.json({ 
-        confirmation: 'Success', 
-        results: result
-    });
-}));
+
 
 module.exports = router;

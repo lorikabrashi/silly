@@ -5,16 +5,69 @@ const jwt = require('jsonwebtoken');
 const { excractFields } = require('../helpers/general');
 const redis = require('redis');
 
+
+const redisAddToList = async (key, value) => {
+    const redisClient = redis.createClient(process.env.REDIS_PORT);
+    const redisVal = await new Promise( ( resolve, reject ) => { 
+        redisClient.lpush(key, value, (err, val) => {
+            if(err) reject(err);
+            resolve(val);
+        });
+    })
+    .catch(err => { throw new ErrorWithStatusCode(err.message, 500) } )
+    .finally(() => { redisClient.quit(); })
+    
+    return redisVal;
+}
+
+const redisRemoveFromList = async (key, value) => {
+    const redisClient = redis.createClient(process.env.REDIS_PORT);
+    const redisVal = await new Promise( ( resolve, reject ) => {
+        redisClient.lrem(key, 0, value, (err, val) => {             
+            if(err) reject(err);
+            resolve(val);
+        });
+    })
+    .catch( err => { throw new ErrorWithStatusCode(err.message, 500) })
+    .finally(() => { redisClient.quit(); })
+
+    return redisVal;
+} 
+
+
 module.exports = authStrategies = { 
     
-    generateNewAccessToken: async (user) => {
+    generateNewAccessToken: async (user, refreshToken) => {
+    
+        const redisClient = redis.createClient(process.env.REDIS_PORT);  
+        await new Promise( ( resolve, reject ) => { 
+            redisClient.lrange(user._id, 0, 10000, (err, val) => {
+                if(err) reject(err);
+                if(val.length === 0) reject( { message: 'Invalid Refresh Token', statusCode: 401 } )
+                if(!val.includes(refreshToken)) reject( { message: 'Invalid Refresh Token', statusCode: 401 } )
+                jwt.verify(refreshToken, process.env.JWT_KEY_REFRESH_TOKEN, (err, decoded) => {
+                    if(err) reject(err);
+                    resolve(refreshToken)
+                });
+            })
+        })
+        .catch(err => { throw new ErrorWithStatusCode(err.message, err.statusCode) })
+        .finally(() => { redisClient.quit(); })
+
+        await redisRemoveFromList(user._id, refreshToken);
+
         const tokenData = { 
             _id: user._id, 
             role: user.role 
         };
-        const accessToken = jwt.sign(tokenData, process.env.JWT_KEY_ACCESS_TOKEN, { expiresIn: '1h' });
-        return { accessToken };
+        const accessToken = jwt.sign(tokenData, process.env.JWT_KEY_ACCESS_TOKEN, { expiresIn: process.env.JWT_KEY_ACCESS_TOKEN_EXP });
+        const newRefreshToken = jwt.sign(tokenData, process.env.JWT_KEY_REFRESH_TOKEN, { expiresIn: process.env.JWT_KEY_REFRESH_TOKEN_EXP });
+
+        await redisAddToList(user._id.toString(), newRefreshToken);
+        
+        return { accessToken, refreshToken: newRefreshToken};
     },
+
     login: async (params) => {
         
         const { username, password, email } = params;
@@ -43,23 +96,16 @@ module.exports = authStrategies = {
             role: user.role 
         };
 
-        const refreshToken = jwt.sign(tokenData, process.env.JWT_KEY_REFRESH_TOKEN, { expiresIn: '5d' });
-        const accessToken = jwt.sign(tokenData, process.env.JWT_KEY_ACCESS_TOKEN, { expiresIn: '1h' });
+        const accessToken = jwt.sign(tokenData, process.env.JWT_KEY_ACCESS_TOKEN, { expiresIn: process.env.JWT_KEY_ACCESS_TOKEN_EXP });
+        const refreshToken = jwt.sign(tokenData, process.env.JWT_KEY_REFRESH_TOKEN, { expiresIn: process.env.JWT_KEY_REFRESH_TOKEN_EXP });
 
-        const redisClient = redis.createClient(process.env.REDIS_PORT);
-        redisClient.setex(user._id.toString(), 432000, refreshToken);
-        redisClient.quit();
+        redisAddToList(user._id.toString(), refreshToken);
 
         return { ...excractFields(user, ['_id', 'username', 'email' ]), refreshToken, accessToken };
-    },   
-    logout: async (_id) => {
-        const redisClient = redis.createClient(process.env.REDIS_PORT);
-        const val = await new Promise( ( resolve ) => {
-            redisClient.del(_id, (err, val) => {                
-                resolve(val);
-            });
-        })
-        redisClient.quit();
+    },
+
+    logout: async (_id, refreshToken) => {
+        const val = await redisRemoveFromList(_id, refreshToken);
         return val;
     }
 }
