@@ -45,6 +45,7 @@ module.exports = authStrategies = {
                 if(err) reject(err);
                 if(val.length === 0) reject( { message: 'Invalid Refresh Token', statusCode: 401 } )
                 if(!val.includes(refreshToken)) reject( { message: 'Invalid Refresh Token', statusCode: 401 } )
+                
                 jwt.verify(refreshToken, process.env.JWT_KEY_REFRESH_TOKEN, (err, decoded) => {
                     if(err) reject(err);
                     resolve(refreshToken)

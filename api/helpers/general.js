@@ -41,5 +41,11 @@ module.exports = {
         fields = fields ? fields.split(",") : [];
 
         return { offset, limit, fields }
-    }
+    },
+    sendResponse: (results, confirmation = true) => {  
+        if(!confirmation) 
+            return { confirmation: 'Fail', statusCode: results.statusCode || 500, message: results.message };
+        
+        return { confirmation: 'Success', results };
+    } 
 }

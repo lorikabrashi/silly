@@ -49,11 +49,8 @@ app.use('/api/v1/app', appRoutes);
 
 app.use((error, req, res, next) => {
     console.log(error);
-    res.status(error.statusCode || 500).json({
-        confirmation: 'Fail',
-        statusCode: error.statusCode || 500,
-        message: error.message
-    });
+    
+    res.status(error.statusCode || 500).json(generalHelpers.sendResponse(error, false)) 
 });
 
 module.exports = app;

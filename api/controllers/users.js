@@ -16,17 +16,20 @@ module.exports = userController = {
         
         return await userController.create(params);
     },
-    
     create: async (params) => {
+        
         params = { username, password, email, role } = params;
 
         if (params.password) {
             params.password = bcrypt.hashSync(params.password, parseInt(process.env.SALT_ROUNDS));
         } 
-       
-        return await usersModel.create(params);
-    },
+        
+        
+        const user = await usersModel.create(params)
+        return user._id;
+        
 
+    },
     find: async (qParams = {}) => {
   
         qParams = getDefaultQueryParams(qParams);
@@ -36,6 +39,23 @@ module.exports = userController = {
             return excractFields(user, qParams.fields);
         })
     },
-    
+    findById: async (id, qParams = {}) => {
+  
+        qParams = getDefaultQueryParams(qParams);
+        const user = await usersModel.findById(id, { password: 0, __v: 0 }, { skip: qParams.offset, limit : qParams.limit });
+
+        return excractFields(user, qParams.fields);        
+    },
+    update: async(id, params) => {
+        params = { username, password, email, role } = params;
+        
+        if (params.password) {
+            params.password = bcrypt.hashSync(params.password, parseInt(process.env.SALT_ROUNDS));
+        }
+
+        return await usersModel.findByIdAndUpdate(id, params, { new: true }).select('-password').select('-__v').exec(); 
+
+         
+    }
       
 }

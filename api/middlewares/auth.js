@@ -1,6 +1,5 @@
 const ErrorWithStatusCode = require('../helpers/ErrorWithStatusCode')
 const jwt = require('jsonwebtoken');
-//const redis = require('redis');
 
 const getTokenFromHeader = (req) => {
     let token = req.headers['x-access-token'] || req.headers['authorization'];        
