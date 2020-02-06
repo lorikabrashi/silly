@@ -24,11 +24,9 @@ module.exports = userController = {
             params.password = bcrypt.hashSync(params.password, parseInt(process.env.SALT_ROUNDS));
         } 
         
-        
         const user = await usersModel.create(params)
-        return user._id;
-        
-
+        return `Created user - ${user._id}`
+    
     },
     find: async (qParams = {}) => {
   
@@ -54,8 +52,10 @@ module.exports = userController = {
         }
 
         return await usersModel.findByIdAndUpdate(id, params, { new: true }).select('-password').select('-__v').exec(); 
-
          
-    }
-      
+    },
+    delete: async(id) => {
+        const user = await usersModel.findByIdAndRemove(id).exec();
+        return `Deleted user - ${user._id}`
+    } 
 }
