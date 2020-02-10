@@ -14,13 +14,14 @@ module.exports = userController = {
         const user = await usersModel.findById(id).exec();
         if('profile' in user._doc){
             const profileID = user.profile;
-            await profilesModel.findByIdAndUpdate(profileID, params, { new: true } ).exec();
-            return await usersModel.findById(id).select('-password').select('-__v').exec();
+            await profilesModel.update({_id: profileID }, params ).exec();
         }
         else{
             const profile = await profilesModel.create(params);
-            return await (await usersModel.findByIdAndUpdate(id, { profile: profile._id }, { new: true } ).select('-password').select('-__v').exec()).populate('profile').execPopulate();
+            await usersModel.update({_id: id }, { profile: profile._id } ).exec();
         }
+        
+        return await userController.findById(id);
     },
     
     registerAdmin: async (params, installation) => {

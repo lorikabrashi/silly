@@ -1,7 +1,7 @@
 const fs = require('fs');
 const logger = require('morgan');
 
-module.exports = {
+module.exports = helperFuncitons = {
     isEmptyObject: (obj) => {
 		return !Object.keys(obj).length;
 	},
@@ -19,12 +19,32 @@ module.exports = {
             stream: fs.createWriteStream(path, { flags: 'a' })
         }));
     },
+
+    getInnerChild: (resource, fields, index) => {
+        if(index == 1){
+            return resource[fields]
+        }
+        else{
+            const elem = fields.shift();
+            return helperFuncitons.getInnerChild(resource[elem], fields, fields.length);
+        }
+    },
+
     excractFields: (resource, fields) => {
         if(fields.length < 1) return resource;
 
-        const result = fields.reduce((acc, field) => {
-            acc[field] = resource[field];
-            return acc;
+            const result = fields.reduce((newResource, field) => {
+            
+            if(field.includes('.')){
+                const splitField = field.split(".");    
+                const key = splitField[splitField.length -1]
+                newResource[key] = helperFuncitons.getInnerChild(resource, splitField, splitField.length)
+            }
+            else{
+                newResource[field] = resource[field];
+            }
+
+            return newResource;
         }, {});
 
         return result;
@@ -35,11 +55,11 @@ module.exports = {
         offset = parseInt(offset);
         limit = parseInt(limit);
         limit = Math.min(limit, 50);
-
+    
         offset = offset ? offset : 0;
         limit = limit ? limit : 50;
         fields = fields ? fields.split(",") : [];
-
+        
         return { offset, limit, fields }
     },
     sendResponse: (results, confirmation = true) => {  

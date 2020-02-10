@@ -11,7 +11,7 @@ const usersSchema = new mongoose.Schema({
 });
 
 const autoPopulateChildren = function (next) {
-    this.populate('profile');
+    this.populate('profile', '-__v');
 	next();
 };
 
