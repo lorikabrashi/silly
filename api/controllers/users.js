@@ -1,5 +1,5 @@
-const usersModel = require('../models/users');
-const profilesModel = require('../models/profiles');
+const usersModel = require('../models/user');
+const profilesModel = require('../models/profile');
 
 const bcrypt = require('bcrypt');
 const { excractFields, getDefaultQueryParams } = require('../helpers/general');
