@@ -9,5 +9,13 @@ const cateogrySchema = new mongoose.Schema({
 	timestamps: true	
 });
 
-let categoryModel = mongoose.model('categories', cateogrySchema);
-module.exports = categoryModel;
+const autoPopulateChildren = function (next) {
+    this.populate("children", '-__v');
+    next();
+};
+
+cateogrySchema
+    .pre("find", autoPopulateChildren)
+    .pre("findOne", autoPopulateChildren);
+
+module.exports = mongoose.model('categories', cateogrySchema);
