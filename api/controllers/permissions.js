@@ -3,7 +3,7 @@ const ErrorWithStatusCode = require('../helpers/ErrorWithStatusCode')
 const { excractFields, getDefaultQueryParams } = require('../helpers/general');
 
 module.exports = permissionController = {
-     create: async (params) => {
+    create: async (params) => {
         params = { name, description, permissions } = params;
 
         const permission = await permissionModel.create(params)
@@ -23,7 +23,6 @@ module.exports = permissionController = {
         return excractFields(permission, qParams.fields);
     },
     update: async(id, params) => {
-        //Test to update only partial perrmission fields
         params = { name, description, permissions } = params;
         return await permissionModel.findByIdAndUpdate(id, params, { new: true }).select('-__v').exec(); 
     },

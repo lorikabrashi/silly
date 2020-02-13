@@ -19,8 +19,21 @@ const projectSchema = new mongoose.Schema({
 	timestamps: true	
 });
 
+const autoPopulateChildren = function (next) {
+
+    this.populate("license", '-__v');
+    this.populate("qa", '-__v');
+    this.populate("categories", '-__v');
+    this.populate("created_from", ['-password', '-__v']);
+    this.populate("open_positions", '-__v');
+ 
+
+    next();
+};
+
+ projectSchema
+    .pre("find", autoPopulateChildren)
+    .pre("findOne", autoPopulateChildren);
 
 
-let projectModel = mongoose.model('projects', projectSchema);
-
-module.exports = projectModel;
+module.exports = mongoose.model('projects', projectSchema);

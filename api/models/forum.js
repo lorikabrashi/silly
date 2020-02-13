@@ -12,5 +12,14 @@ const forumSchema = new mongoose.Schema({
 }, {
 	timestamps: true	
 });
-let forumModel = mongoose.model('forum', forumSchema);
-module.exports = forumModel;
+
+const autoPopulateChildren = function (next) {
+    this.populate("comments", '-__v');
+    next();
+};
+
+forumSchema
+    .pre("find", autoPopulateChildren)
+    .pre("findOne", autoPopulateChildren);
+
+module.exports = mongoose.model('forum', forumSchema);
