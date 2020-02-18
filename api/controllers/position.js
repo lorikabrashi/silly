@@ -4,7 +4,7 @@ const { excractFields, getDefaultQueryParams } = require('../helpers/general');
 
 module.exports = positionController = {
     create: async (params) => {
-        params = { type, description } = params;
+        params = { type, description, status } = params;
         const position = await positionModel.create(params);
         return `Created position - ${position._id}`
     },
@@ -22,7 +22,7 @@ module.exports = positionController = {
         return excractFields(position, qParams.fields);
     },
     update: async(id, params) => {
-        params = { type, description } = params;
+        params = { type, description, status } = params;
         return await positionModel.findByIdAndUpdate(id, params, { new: true }).select('-__v').exec(); 
     },
     delete: async(id) => {

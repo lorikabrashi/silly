@@ -23,7 +23,7 @@ module.exports = projectController = {
         return excractFields(project, qParams.fields);
     },
     update: async(id, params) => {
-        params = { type, description } = params;
+        params = { name, description, license, categories, stage } = params;
         return await projectModel.findByIdAndUpdate(id, params, { new: true }).select('-__v').exec(); 
     },
     delete: async(id) => {

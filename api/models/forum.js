@@ -1,14 +1,17 @@
 const mongoose = require('mongoose');
 
 const forumSchema = new mongoose.Schema({
-    title: {type: String },
-    content: {type: String },
+    title: { type: String },
+    content: { type: String, required: true },
     attachments: [{
         media_type: { type: String, enum: ['IMAGE', "EMBED"], default: 'IMAGE' },
         media: { type: String },
     }],
     comments: [ { type: mongoose.Schema.Types.ObjectId, ref: 'forum' } ],
-    parent: { type: mongoose.Schema.Types.ObjectId, ref: 'forum' }
+    config: {
+        type: { type: String, enum: ['project', 'position', 'child'], default: 'child'},
+        parent_id: { type: mongoose.Schema.Types.ObjectId }
+    }
 }, {
 	timestamps: true	
 });
