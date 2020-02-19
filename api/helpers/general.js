@@ -1,6 +1,45 @@
 const fs = require('fs');
 const logger = require('morgan');
 
+const getInnerChildArray = (resource, fields, isLast, child = null) => {    
+    let returnValuesArr = [];
+    let resourceArr = JSON.parse(JSON.stringify(resource));
+    if(Array.isArray(resourceArr)){
+        resourceArr.forEach(elem => {
+            if(isLast && elem[fields]){
+                returnValuesArr.push({ [fields]: elem[fields] } )
+            }
+            else{
+                if(elem[child]){
+                    returnValuesArr.push( { [child]: getInnerChild(elem[child], fields, fields.length) } )
+                }
+            } 
+        });
+    }
+    return returnValuesArr; 
+}
+
+const getInnerChild = (resource, fields, index) => {    
+    if(index == 1){
+        let returnValue = resource[fields]
+        if(returnValue){
+            return { [fields] : returnValue }
+        }
+        else{
+            return getInnerChildArray(resource, fields, true);
+        }
+    }
+    else{
+        const child = fields.shift();
+        if(resource[child]){
+            return getInnerChild(resource[child], fields, fields.length);
+        }
+        else{
+            return getInnerChildArray(resource, fields, false, child);
+        }
+    }
+}
+
 module.exports = helperFuncitons = {
     isEmptyObject: (obj) => {
 		return !Object.keys(obj).length;
@@ -19,31 +58,16 @@ module.exports = helperFuncitons = {
             stream: fs.createWriteStream(path, { flags: 'a' })
         }));
     },
-
-    getInnerChild: (resource, fields, index) => {
-        if(index == 1){
-            return resource[fields]
-        }
-        else{
-            const elem = fields.shift();
-            return helperFuncitons.getInnerChild(resource[elem], fields, fields.length);
-        }
-    },
-
     excractFields: (resource, fields) => {
         if(fields.length < 1) return resource;
-
             const result = fields.reduce((newResource, field) => {
-            
             if(field.includes('.')){
                 const splitField = field.split(".");    
-                const key = splitField[splitField.length -1]
-                newResource[key] = helperFuncitons.getInnerChild(resource, splitField, splitField.length)
+                newResource[field] = getInnerChild(resource, splitField, splitField.length)
             }
             else{
                 newResource[field] = resource[field];
             }
-
             return newResource;
         }, {});
 

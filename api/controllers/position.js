@@ -1,12 +1,15 @@
-const positionModel = require('../models/position')
-const ErrorWithStatusCode = require('../helpers/ErrorWithStatusCode')
+const positionModel = require('../models/position');
+const projectModel = require('../models/project');
+const ErrorWithStatusCode = require('../helpers/ErrorWithStatusCode');
 const { excractFields, getDefaultQueryParams } = require('../helpers/general');
 
 module.exports = positionController = {
     create: async (params) => {
-        params = { type, description, status } = params;
+        params = { type, description, status, parent_id } = params;
         const position = await positionModel.create(params);
-        return `Created position - ${position._id}`
+        await projectModel.update({ _id: parent_id }, { $push: { positions: position._id } })
+        
+        return `Created position - ${position._id}`;
     },
     find: async (qParams) => {
         qParams = getDefaultQueryParams(qParams);

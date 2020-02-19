@@ -34,7 +34,8 @@ module.exports = _validators = {
     ],
     positions: [
         check('type', 'Position type cannot be empty').notEmpty(),
-        check('description', 'Position description cannot be empty').notEmpty()
+        check('description', 'Position description cannot be empty').notEmpty(),
+        check('parent_id', 'parent_id cannot be empty and must be an id reference to projects').notEmpty().isMongoId(),
     ],
     projects: [
         check('name', 'Project name cannot be empty').notEmpty(), 
