@@ -3,12 +3,10 @@ const router = express.Router();
 const auth = require('../../../middlewares/auth');
 const catchException = require('../../../middlewares/catchException');
 const controllers = require('../../../controllers/')
+const { sendResponse } = require('../../../helpers/general');
 
 router.get('/', catchException(auth.app.validateAccessToken), catchException(async (req, res) => {
-    res.json({
-		confirmation: 'Success',
-		results: 'Silly App API'
-	});
+   res.json(sendResponse('Silly App API'))
 }));
 
 

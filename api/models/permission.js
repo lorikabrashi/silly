@@ -4,7 +4,10 @@ const permissionAttribute = { type: Boolean, default: false };
 const permissionSchema = new mongoose.Schema({
     name: { type: String, required: true, unique: true },
     description: { type: String, required: true },
-    
+    config: {
+        type: { type: String, enum: ['Default', 'Custom'], default: 'Custom' },
+        parent_id: { type: mongoose.Schema.Types.ObjectId, ref: 'projects'}
+    },
     permissions: {
         invite_peers: permissionAttribute,
         qa: permissionAttribute,
@@ -15,6 +18,7 @@ const permissionSchema = new mongoose.Schema({
 }, {
     timestamps: true
 });
+
 
 let permissionModel = mongoose.model('permissions', permissionSchema);
 module.exports = permissionModel;

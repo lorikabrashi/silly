@@ -8,8 +8,6 @@ const { sendResponse } = require('../../../helpers/general');
 const validations = require('../../../helpers/validations');
 const { validationResult } = require('express-validator');
 
-
-
 router.put('/update-profile/:id', /* catchException(auth.adm.validateAccessToken), */ validations.profile, catchException(async function(req, res){
 
     const errorResults = validationResult(req);

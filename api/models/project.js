@@ -14,7 +14,8 @@ const projectSchema = new mongoose.Schema({
         }
     ],
     stage: { type: String, enum: ['initiation', 'planning', 'execution', 'closure' ], default: 'initiation' },
-    positions: [ { type: mongoose.Schema.Types.ObjectId, ref: 'positions' }  ]
+    positions: [ { type: mongoose.Schema.Types.ObjectId, ref: 'positions' }  ],
+    permissions: [ { type: mongoose.Schema.Types.ObjectId, ref: 'permissions'} ]
 }, {
 	timestamps: true	
 });
@@ -26,7 +27,9 @@ const autoPopulateChildren = function (next) {
     this.populate("categories", '-__v');
     this.populate("created_from", ['-password', '-__v']);
     this.populate("positions", '-__v');
- 
+    this.populate('permissions', 'name');
+    this.populate('peers.user', ['username', '-profile']);
+    this.populate('peers.permissions', 'name');
 
     next();
 };

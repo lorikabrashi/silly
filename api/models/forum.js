@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const forumSchema = new mongoose.Schema({
     title: { type: String },
     content: { type: String, required: true },
+    user: { type: mongoose.Schema.Types.ObjectId, ref: 'users' },
     attachments: [{
         media_type: { type: String, enum: ['IMAGE', "EMBED"], default: 'IMAGE' },
         media: { type: String },

@@ -4,24 +4,19 @@ const catchException = require('../../../middlewares/catchException');
 const controllers = require('../../../controllers/');
 const validations = require('../../../helpers/validations');
 const { validationResult } = require('express-validator');
+const { sendResponse } = require('../../../helpers/general');
 
 router.post('/login', catchException(async (req, res) => {
 
     const result = await controllers['auth'].login(req.body);
-    res.json({ 
-        confirmation: 'Success', 
-        results : result
-    });
-
+    res.json(sendResponse(result))
 }));
 
 router.post('/sign-up', catchException(async (req, res) => {
 
     req.body.role = 'user';
     await controllers['users'].create(req.body);
-    
-    res.json({ confirmation: 'Success'});
-
+    res.json(sendResponse('Sing-up success'))
 }));
 
 router.post('/forgot-password', catchException(async (req, res) => {
@@ -40,7 +35,7 @@ router.post('/register-admin', validations.users, catchException(async (req, res
     req.body.role = 'admin';
     await controllers['users'].registerAdmin(req.body, true);
     
-    res.json({ confirmation: 'Success'});   
+    res.json(sendResponse('Register Success'))   
    
 }));
 

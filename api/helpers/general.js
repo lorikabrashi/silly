@@ -2,8 +2,8 @@ const fs = require('fs');
 const logger = require('morgan');
 
 const getInnerChildArray = (resource, fields, isLast, child = null) => {    
-    let returnValuesArr = [];
-    let resourceArr = JSON.parse(JSON.stringify(resource));
+    const returnValuesArr = [];
+    const resourceArr = JSON.parse(JSON.stringify(resource));
     if(Array.isArray(resourceArr)){
         resourceArr.forEach(elem => {
             if(isLast && elem[fields]){
@@ -21,9 +21,9 @@ const getInnerChildArray = (resource, fields, isLast, child = null) => {
 
 const getInnerChild = (resource, fields, index) => {    
     if(index == 1){
-        let returnValue = resource[fields]
+        const returnValue = resource[fields]
         if(returnValue){
-            return { [fields] : returnValue }
+            return { [fields]: returnValue }
         }
         else{
             return getInnerChildArray(resource, fields, true);

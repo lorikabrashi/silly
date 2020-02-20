@@ -28,6 +28,7 @@ module.exports = _validators = {
     ],
     forum: [
         check('content', 'Content cannot be empty').notEmpty(),
+        check('user', "user cannot be empty and must be an id reference of 'users'").notEmpty().isMongoId(), //TODO - Get from access token
         check('config',"Config cannot be empty").notEmpty(),
         check('config.type',"Config type must be: 'project', 'position' or 'child'").isIn(['project', 'position', 'child']),
         check('config.parent_id',"Config parent_id cannot be empty and must be an id reference of 'project', 'position' or 'forum'").notEmpty().isMongoId(),
@@ -44,13 +45,27 @@ module.exports = _validators = {
         check('categories', 'Project must have at least one category').notEmpty(),
         check('categories.*', 'Category must be an id reference to a category').isMongoId(),
         check('stage', 'Stage must be one of these values: "initiation", "planning", "execution" or "closure"').isIn(['initiation', 'planning', 'execution', 'closure' ]), 
-        check('created_from', 'created_from cannot be empty and must be an id reference to a user').notEmpty().isMongoId()
+        check('created_from', 'created_from cannot be empty and must be an id reference to a user').notEmpty().isMongoId()//TODO - Get from access token
     ],
+    /**
+     * @param { string } password - Validate password 
+    */
     validatePassword: (password) => {
-        var isValid = passwordRegex.test(password);
+        const isValid = passwordRegex.test(password);
         if (!isValid) {
             throw new ErrorWithStatusCode(passwordMessage, 400);
         }
         return true;
     },
+    /**
+     * @param { object } params - object params form body
+     * @param { Array } fields - array fields to be required
+    */
+    validateReqFields: (params, fields) => {
+        fields.forEach(elem => {
+            if(!(elem in params)){
+                throw new ErrorWithStatusCode(`${elem} cannot be empty`, 400);
+            }
+        });
+    }
 }

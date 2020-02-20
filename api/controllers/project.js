@@ -1,11 +1,27 @@
 const projectModel = require('../models/project')
+const permissionsModel = require('../models/permission')
 const ErrorWithStatusCode = require('../helpers/ErrorWithStatusCode')
 const { excractFields, getDefaultQueryParams } = require('../helpers/general');
 
 module.exports = projectController = {
     create: async (params) => {
-
+        
         params = { name, description, license, categories, stage, created_from } = params;
+        
+        /* Get default permissions and add them to the project */
+        const permissions = await permissionsModel.find({'config.type': 'Default'});
+        const deafultPermissions = [];
+        permissions.forEach(e => deafultPermissions.push(e._id));
+        params.permissions = deafultPermissions;
+        
+        /* Create self as peer with administrator permissions */
+        const adminRole = permissions.find(e => e.name === 'Administrator');
+        params.peers = [
+            {
+                user: created_from,
+                permissions: adminRole._id
+            }
+        ]
         const project = await projectModel.create(params);
         return `Created project - ${project._id}`
     },

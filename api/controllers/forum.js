@@ -3,14 +3,14 @@ const positionModel = require('../models/position');
 const projectModel = require('../models/project');
 const ErrorWithStatusCode = require('../helpers/ErrorWithStatusCode')
 const { excractFields, getDefaultQueryParams } = require('../helpers/general');
-
+const { validateReqFields } = require ('../helpers/validations');
 module.exports = forumController = {
     create: async (params) => {
-        params = { title, content, attachments, config } = params;
-        if(config.type !== 'child' && title === undefined){
-            throw new ErrorWithStatusCode('Title cannot be empty', 400);
+        if(params.config.type !== 'child'){
+            validateReqFields(params, ['title']);
         }
-        
+        params = { title, content, attachments, config } = params;  
+     
         const post = await forumModel.create(params);
         const parent_id = config.parent_id;
 

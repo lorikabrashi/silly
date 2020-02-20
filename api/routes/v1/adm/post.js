@@ -12,19 +12,13 @@ const { validationResult } = require('express-validator');
 router.get('/token', catchException(auth.adm.validateAccessTokenExp), catchException(async (req, res) => {
     const { refreshToken } = req.body;
     const result = await controllers['auth'].generateNewAccessToken(req.decoded, refreshToken);
-    res.json({ 
-        confirmation: 'Success', 
-        results: result
-    });
+    res.json(sendResponse(result))
 }));
 
 router.post('/sign-out', catchException(auth.adm.validateAccessToken), catchException(async (req, res) => {
     const { refreshToken } = req.body;
     const result = await controllers['auth'].logout(req.decoded._id, refreshToken);
-     res.json({ 
-        confirmation: 'Success', 
-        results: result
-    });
+    res.json(sendResponse(result))
 }));
 
 router.post('/:resource', /* catchException(auth.adm.validateAccessToken), */  catchException(async function(req, res){
