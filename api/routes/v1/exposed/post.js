@@ -13,9 +13,7 @@ router.post('/login', catchException(async (req, res) => {
 }));
 
 router.post('/sign-up', catchException(async (req, res) => {
-
-    req.body.role = 'user';
-    await controllers['users'].create(req.body);
+    await controllers['users'].register(req.body);
     res.json(sendResponse('Sing-up success'))
 }));
 
@@ -32,9 +30,7 @@ router.post('/register-admin', validations.users, catchException(async (req, res
     const errorResults = validationResult(req);
     if (!errorResults.isEmpty()) throw new ErrorWithStatusCode(errorResults.errors[0].msg, 400)
 
-    req.body.role = 'admin';
     await controllers['users'].registerAdmin(req.body, true);
-    
     res.json(sendResponse('Register Success'))   
    
 }));

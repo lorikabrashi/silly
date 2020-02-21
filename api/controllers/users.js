@@ -1,13 +1,34 @@
 const usersModel = require('../models/user');
 const profilesModel = require('../models/profile');
-
 const { excractFields, getDefaultQueryParams } = require('../helpers/general');
+const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const ErrorWithStatusCode = require('../helpers/ErrorWithStatusCode')
 const validations = require('../helpers/validations')
+const mailConfig = require('../helpers/mailConfig');
+const nodemailer = require('nodemailer');
 
 module.exports = userController = {
-    
+    verifyUser: async (token) => {
+        const decoded = await new Promise( ( resolve, reject ) => { 
+            jwt.verify(token, process.env.JWT_KEY_VERIFICATION, (err, decoded) => {
+                if(err){
+                    reject(err);
+                }
+                resolve(decoded)
+            })
+        }).catch(err => { throw new ErrorWithStatusCode(err.message, err.statusCode)});
+
+        const user = await usersModel.findOne({email: decoded.email}).exec();
+        if(!user){
+            throw new ErrorWithStatusCode("User with this email doesn't exist", 404)
+        }
+        if(user.verified){
+            throw new ErrorWithStatusCode("User already verified", 400)
+        }
+        await usersModel.updateOne({ _id: user._id }, { verified: true }).exec();
+        return
+    },
     updateProfile: async(id, params) => {
         params = { first_name, last_name, image, phone_number } = params;
         const user = await usersModel.findById(id).exec();
@@ -29,21 +50,41 @@ module.exports = userController = {
             const countAdmins = await usersModel.count({role: 'admin'}).exec();
             if(countAdmins > 0) throw new ErrorWithStatusCode('Account already exists', 502)
         }
-        
+        params.role = 'admin';
+        params.verified = true;
         return await userController.create(params);
+    },
+
+    register: async (params) => {
+        params = { username, password, email } = params;
+        
+        params.role = 'user';
+        params.verified = false;
+        
+        if (params.password) {
+            params.password = bcrypt.hashSync(params.password, parseInt(process.env.SALT_ROUNDS));
+        }
+        
+        const JWT_data = { email };
+        const verification_token = jwt.sign(JWT_data, process.env.JWT_KEY_VERIFICATION, { expiresIn: process.env.JWT_KEY_VERIFICATION_EXP });
+        const smtpTrans =  nodemailer.createTransport(mailConfig.config)
+        await smtpTrans.sendMail(mailConfig.templates.verification(username, email, verification_token));
+
+        const user = await usersModel.create(params)
+        return `Created user - ${user._id}`
+    
     },
 
     create: async (params) => {
         
         params = { username, password, email, role } = params;
-
+        params.verified = true;
         if (params.password) {
             params.password = bcrypt.hashSync(params.password, parseInt(process.env.SALT_ROUNDS));
         } 
         
         const user = await usersModel.create(params)
         return `Created user - ${user._id}`
-    
     },
 
     find: async (qParams = {}) => {
