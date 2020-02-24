@@ -9,6 +9,31 @@ const mailConfig = require('../helpers/mailConfig');
 const nodemailer = require('nodemailer');
 
 module.exports = userController = {
+    resetPassword: async (params, token) => {
+        const password = bcrypt.hashSync(params.password, parseInt(process.env.SALT_ROUNDS));
+        const decoded = await new Promise( ( resolve, reject ) => { 
+        jwt.verify(token, process.env.JWT_KEY_PASSWORD_RESET, (err, decoded) => {
+            if(err){
+                reject(err);
+            }
+            resolve(decoded)
+        })
+        }).catch(err => { throw new ErrorWithStatusCode(err.message, err.statusCode)});
+        await usersModel.updateOne({ email: decoded.email }, { password });
+        return
+    },
+    requestPasswordReset: async (params) => {
+        const { email } = params;
+        const user = await usersModel.findOne({ email }).exec();
+        if(!user){
+            throw new ErrorWithStatusCode("User witth this email doesn't exist", 404);
+        }
+        const JWT_data = { email };
+        const token = jwt.sign(JWT_data, process.env.JWT_KEY_PASSWORD_RESET, { expiresIn: process.env.JWT_KEY_PASSWORD_RESET_EXP });
+        const smtpTrans = nodemailer.createTransport(mailConfig.config)
+        await smtpTrans.sendMail(mailConfig.templates.resetPassword(user.username, email, token));
+        return
+    },
     verifyUser: async (token) => {
         const decoded = await new Promise( ( resolve, reject ) => { 
             jwt.verify(token, process.env.JWT_KEY_VERIFICATION, (err, decoded) => {

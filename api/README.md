@@ -14,6 +14,8 @@ Collaboration Platform
     JWT_KEY_ACCESS_TOKEN_EXP = 1h
     JWT_KEY_VERIFICATION = VERIFICATION_KEY
     JWT_KEY_VERIFICATION_EXP = 1d
+    JWT_KEY_PASSWORD_RESET = PASSWORD_RESET_KEY
+    JWT_KEY_PASSWORD_RESET_EXP = 1h
     EMAIL_HOST = smtp.example.com
     EMAIL = email@your_domain.com
     EMAIL_PASS = password

@@ -23,14 +23,39 @@ module.exports = {
             return {
                 from: process.env.EMAIL,
                 to: email,
-                subject: `Your account at Silly needs verification`,
-                text: `Dear, ${username} \n\nPlease copy the link below and paste it in your browser to verify your account:\n ${verificationURL}`,
-                html: `Dear, ${username} \n\nPlease click at the link below to verify your account:\n <a href='${verificationURL}'>${verificationURL}</a>`
+                subject: `Silly - Account Verification`,
+                text: `Dear ${username}, your account at Silly needs verification.
+                
+                Please copy the link below and paste it in your browser to verify your account:
+                
+                 ${verificationURL}`,
+                html: `<h2>Dear ${username}, your account at Silly needs verification.</h2>
+                
+                <p>Please click at the link below to verify your account:</p>
+                
+                <a href='${verificationURL}'>Verify Account</a>`
             }
         },
-        resetPassword: () => {
+        resetPassword: (username, email, token) => {
+            const resetUrl = `${process.env.CLIENT_URL}/forgot-password?code=${token}`;
             return {
-
+                from: process.env.EMAIL,
+                to: email,
+                subject: `Silly - Forgot Password`,
+                text: `Dear ${username}, we received a request to reset your password.
+                
+                Use the link below to set up a new password for your account. If you did not request
+                to reset your password, ignore this email and the link will expire on its own.
+                    
+                    ${resetUrl}
+                `,
+                html: `<h2> Dear ${username}, we received a request to reset your password.</h2>
+                
+                <p>Use the link below to set up a new password for your account. If you did not request
+                to reset your password, ignore this email and the link will expire on its own.</p>
+                    
+                    <a href="${resetUrl}"> Set new password</a>
+                `,
             }
         },
         projectInvite: () => {

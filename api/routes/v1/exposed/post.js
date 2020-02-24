@@ -12,18 +12,22 @@ router.post('/login', catchException(async (req, res) => {
     res.json(sendResponse(result))
 }));
 
-router.post('/sign-up', catchException(async (req, res) => {
+router.post('/sign-up', validations.users, catchException(async (req, res) => {
     await controllers['users'].register(req.body);
     res.json(sendResponse('Sing-up success'))
 }));
 
-router.post('/forgot-password', catchException(async (req, res) => {
-
+router.post('/request-forgot-password', validations.email, catchException(async (req, res) => {
+    await controllers['users'].requestPasswordReset(req.body);
+    res.json(sendResponse('Email sent!'))
 }));
 
-router.post('/forgot-username', catchException(async (req, res) => {
-
+router.post('/forgot-password/:code', validations.password, catchException(async (req, res) => {
+    const code = req.params.code
+    await controllers['users'].resetPassword(req.body, code);
+    res.json(sendResponse('Password Reset Success'))
 }));
+
 
 router.post('/register-admin', validations.users, catchException(async (req, res) => {
     
