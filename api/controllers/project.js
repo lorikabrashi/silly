@@ -4,6 +4,26 @@ const ErrorWithStatusCode = require('../helpers/ErrorWithStatusCode')
 const { excractFields, getDefaultQueryParams } = require('../helpers/general');
 
 module.exports = projectController = {
+    invitationResponse: async( params, userId ) =>{
+        const { projectId, response, reason } = params
+        
+        /* TODO: */
+        //check project if exist
+        //check if user has been invited
+        // responde to invitation
+
+    },
+    invitePeer: async (params, userId) => {
+        const { projectId, username, permissionsId, title, description } = params;
+
+        /* TODO: */
+        // check project if exist
+        // check if userId is the project owner or has the permissions to send invitation about project
+        // check username if exist as user
+        // check if username already has the same invitation on pending state
+        // Store the invite to user & send invitation to his email
+
+    },
     create: async (params) => {
         
         params = { name, description, license, categories, stage, created_from } = params;
@@ -45,5 +65,5 @@ module.exports = projectController = {
     delete: async(id) => {
         const project = await projectModel.findByIdAndRemove(id).exec();
         return `Deleted project - ${project._id}`
-    }
+    } 
 }

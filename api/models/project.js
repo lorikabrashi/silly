@@ -1,5 +1,16 @@
 const mongoose = require('mongoose');
 
+const peerSchema = new mongoose.Schema({
+    status: { type: String, enum: ['pending', 'accepted', 'rejected'], default: 'pending' },
+    title: { type: String, require: true },
+    description: { type: String, require: true },
+    user: { type: mongoose.Schema.Types.ObjectId, ref: 'users' },
+    permissions: { type: mongoose.Schema.Types.ObjectId, ref: 'permissions' },
+    responseText: { type: String, require: true }
+}, {
+    timestamps: true	
+});
+
 const projectSchema = new mongoose.Schema({
     name: {type: String, required: true},
     description: {type: String, required: true},
@@ -7,12 +18,7 @@ const projectSchema = new mongoose.Schema({
     qa: [ {type: mongoose.Schema.Types.ObjectId, ref: 'forum'} ],
     categories: [ { type: mongoose.Schema.Types.ObjectId, ref: 'categories'} ],
     created_from: { type: mongoose.Schema.Types.ObjectId, ref: 'users'},
-    peers: [ 
-        { 
-           user: { type: mongoose.Schema.Types.ObjectId, ref: 'users' },
-           permissions: { type: mongoose.Schema.Types.ObjectId, ref: 'permissions' }
-        }
-    ],
+    peers: [ peerSchema ],
     stage: { type: String, enum: ['initiation', 'planning', 'execution', 'closure' ], default: 'initiation' },
     positions: [ { type: mongoose.Schema.Types.ObjectId, ref: 'positions' }  ],
     permissions: [ { type: mongoose.Schema.Types.ObjectId, ref: 'permissions'} ]

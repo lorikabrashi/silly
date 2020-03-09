@@ -36,6 +36,11 @@ module.exports = {
                 <a href='${verificationURL}'>Verify Account</a>`
             }
         },
+        /**
+         * @param { string } username - Username of the user
+         * @param { string } email - Email of the user
+         * @param { string } token - JWT to be send by email for verifying 
+        */
         resetPassword: (username, email, token) => {
             const resetUrl = `${process.env.CLIENT_URL}/forgot-password?code=${token}`;
             return {
@@ -58,7 +63,7 @@ module.exports = {
                 `,
             }
         },
-        projectInvite: () => {
+        invitePeer: () => {
             return {
 
             }
