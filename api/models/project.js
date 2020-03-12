@@ -5,8 +5,9 @@ const peerSchema = new mongoose.Schema({
     title: { type: String, require: true },
     description: { type: String, require: true },
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'users' },
-    permissions: { type: mongoose.Schema.Types.ObjectId, ref: 'permissions' },
-    responseText: { type: String, require: true }
+    permission: { type: mongoose.Schema.Types.ObjectId, ref: 'permissions' },
+    responseText: { type: String, require: true },
+    invitationsSent: { type: Number, default: 0 }
 }, {
     timestamps: true	
 });
@@ -35,7 +36,7 @@ const autoPopulateChildren = function (next) {
     this.populate("positions", '-__v');
     this.populate('permissions', 'name');
     this.populate('peers.user', ['username', '-profile']);
-    this.populate('peers.permissions', 'name');
+    this.populate('peers.permission', 'name');
 
     next();
 };

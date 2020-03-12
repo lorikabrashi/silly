@@ -63,9 +63,30 @@ module.exports = {
                 `,
             }
         },
-        invitePeer: () => {
+        /**
+         * @param { string } email - Email of the user
+         * @param { string } username - Username of the user
+         * @param { string } projectName - Project title
+        */
+        invitePeer: (email, username, projectName) => {
+            const responseUrl = `${process.env.CLIENT_URL}/dashboard/invites`;;
             return {
-
+                from: process.env.EMAIL,
+                to: email,
+                subject: `Silly - Project invitaion`,
+                text: `Dear ${username}, you have been invited to participate in the following project: ${projectName}.
+                    Please follow the link to resond to the invitaion  
+                
+                    ${responseUrl}
+                
+                `,
+                html: `<h2> Dear ${username}, you have been invited to participate in the following project: ${projectName}. </h2>
+                
+                <p>
+                    Please click on the link to resond to the invitaion
+                    <a href="${responseUrl}"> Respond to invite </a>
+                 </p>
+                `
             }
         }
     }
