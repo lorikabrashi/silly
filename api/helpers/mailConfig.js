@@ -73,7 +73,7 @@ module.exports = {
             return {
                 from: process.env.EMAIL,
                 to: email,
-                subject: `Silly - Project invitaion`,
+                subject: `Silly - Project invitation`,
                 text: `Dear ${username}, you have been invited to participate in the following project: ${projectName}.
                     Please follow the link to resond to the invitaion  
                 

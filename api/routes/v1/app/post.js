@@ -5,15 +5,19 @@ const catchException = require('../../../middlewares/catchException');
 const controllers = require('../../../controllers/')
 const { sendResponse } = require('../../../helpers/general');
 
+
+router.post('/invite-peer', /* catchException(auth.app.validateAccessTokenExp), */ /* validate body */ catchException(async (req, res) => {
+    const result = await controllers['projects'].invitePeer(req.body, '5e396b1abd95462358ce648a');// req.decoded._id);
+    res.json(sendResponse(result));
+}));
+
+
 router.post('/invitation-response', catchException(auth.app.validateAccessTokenExp), /* validate body */ catchException(async (req, res) => {
     const result = await controllers['projects'].invitationResponse(req.body, req.decoded._id);
     res.json(sendResponse(result));
 }));
 
-router.post('/invite-peer', catchException(auth.app.validateAccessTokenExp), /* validate body */ catchException(async (req, res) => {
-    const result = await controllers['projects'].invitePeer(req.body, req.decoded._id);
-    res.json(sendResponse(result));
-}));
+
 
 router.post('/token', catchException(auth.app.validateAccessTokenExp), catchException(async (req, res) => {
     const { refreshToken } = req.body;

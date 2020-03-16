@@ -40,12 +40,13 @@ const getInnerChild = (resource, fields, index) => {
     }
 }
 
-module.exports = helperFuncitons = {
+module.exports = {
     isEmptyObject: (obj) => {
 		return !Object.keys(obj).length;
 	},
     createFolder:(dir) => {
 		if (!fs.existsSync(dir)){
+            
 			fs.mkdirSync(dir);
 		}
 	},

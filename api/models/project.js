@@ -7,7 +7,7 @@ const peerSchema = new mongoose.Schema({
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'users' },
     permission: { type: mongoose.Schema.Types.ObjectId, ref: 'permissions' },
     responseText: { type: String, require: true },
-    invitationsSent: { type: Number, default: 0 }
+    invitationsSent: { type: Number, default: 1 }
 }, {
     timestamps: true	
 });

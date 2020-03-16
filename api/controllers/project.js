@@ -19,6 +19,9 @@ module.exports = projectController = {
 
     },
     invitePeer: async (params, userId) => {
+        
+        /* TODO: SETUP A CRON JOB TO AUTO REJECT AFTER 1 WEEK OF NO RESPONSE */
+        
         const { projectId, username, permissionsId, title, description } = params;
 
         const project = await projectModel.findOne({ _id: projectId }).exec();
@@ -27,7 +30,8 @@ module.exports = projectController = {
         }
 
         // check if userId is the project owner or has the permissions to send invitation about project
-        if(userId !== project.created_from){
+        
+        if(userId != project.created_from._id){
             
             if(project.peers.length === 0) throw new ErrorWithStatusCode('No sufficient permissions', 401);
             const peer = project.peers.filter(e => { return e.user === userId ? e : null } );
@@ -40,37 +44,53 @@ module.exports = projectController = {
             }
         }
         // check username if exist as user
-        const user = await userModel.findOne({username: username }).exec();
+        const user = await userModel.findOne({ username: username }).exec();
         if(!user) throw new ErrorWithStatusCode('No peer found with the given username', 404);
         
         // Cannot invite self
-        if(user.username === username) throw new ErrorWithStatusCode('Bad request', 400);
-        
-        // check if username already has the same invitation as accepted/pending state
-        if(project.peers.filter(e => { return e.user === user._id ? !(e.status === 'rejected') : false })){ throw new ErrorWithStatusCode('Bad request', 400); }
+        if(user._id == userId) throw new ErrorWithStatusCode('Bad request', 400);
+       
+ 
+        let invitationStatus = {
+            isInvited: false,
+            invitationsSent: 1
+        };
 
-        
-        // TODO validate that no more than 3 invitaions for a user are allowed 
+        project.peers.forEach(elem => {
+            if(elem.user._id.toString() == user._id.toString()) {
+                if(elem.status !== 'rejected'){
+                    throw new ErrorWithStatusCode('This user was already invited to this project', 400);
+                }
+                if(elem.invitationsSent >= 3){
+                    throw new ErrorWithStatusCode('Max invitation per user reached', 400);
+                }
+                invitationStatus.isInvited = true;
+                invitationStatus.invitationsSent = parseInt(elem.invitationsSent) + 1
+            }
+        })
 
-        // store invite to user & store user as peer on the project
         const invite = {
             title: title,
             description: description,
             user: user._id,
             permission: permissionsId,
-            invitationsSent: 0 
+            invitationsSent: invitationStatus.invitationsSent
+        };
+       
+        if(invitationStatus.isInvited){
+            await projectModel.updateOne({ _id: project._id }, { $pull : { 'peers': { user: user._id} }}).exec();             
         }
+        // store invite to user & store user as peer on the project
         await projectModel.updateOne({ _id: project._id }, { $push : { peers: invite }}).exec();
+    
+        await userModel.updateOne({ _id: user._id }, { $push : { invites: { project: project._id } } }).exec();
 
-        await userModel.updateOne({_id: user._id }, { $push : { invites: { project: project._id } } }).exec();
-        
         // send invitation to his email
         const smtpTrans = nodemailer.createTransport(mailConfig.config);
         await smtpTrans.sendMail(mailConfig.templates.invitePeer(user.email, username, project.title));
 
         return { username, userId: user._id, message: "invite was successful"} 
 
-        /* TODO: TEST Func */
     },
     create: async (params) => {
         
