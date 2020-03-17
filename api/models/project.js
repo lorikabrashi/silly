@@ -35,7 +35,7 @@ const autoPopulateChildren = function (next) {
     this.populate("created_from", ['-password', '-__v']);
     this.populate("positions", '-__v');
     this.populate('permissions', 'name');
-    this.populate('peers.user', ['username', '-profile']);
+    this.populate('peers.user', ['username', 'email', '-profile']);
     this.populate('peers.permission', 'name');
 
     next();

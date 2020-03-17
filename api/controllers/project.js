@@ -9,10 +9,10 @@ const mailConfig = require('../helpers/mailConfig');
 const nodemailer = require('nodemailer');
 
 module.exports = projectController = {
-    invitationResponse: async( params, userId ) => {
+    invitationResponse: async(params, userId) => {
 
         const { projectId, response, reason } = params;
-
+        
         const project = await projectModel.findOne({ _id: projectId }).exec();
         if(!project){
             throw new ErrorWithStatusCode("Incorect project ID", 400);
@@ -25,11 +25,20 @@ module.exports = projectController = {
             throw new ErrorWithStatusCode("Already responded to this invitation", 401)
         }
 
-        const status = response ? 'accepted' : 'rejected';
+        const status =  JSON.parse(response) ? 'accepted' : 'rejected';
         await userModel.updateOne({ _id: userId, 'invites.project': projectId }, { 'invites.$.status': status, 'invites.$.responseText': reason }).exec()
         await projectModel.updateOne({ _id: projectId, 'peers.user': userId }, { 'peers.$.status': status, 'peers.$.responseText': reason }).exec()
         
-        /* TODO: notify by email  */
+        const emailList = [];
+        project.peers.forEach(elem => {
+            if(elem.status === 'accepted'){
+                emailList.push(elem.user.email);
+            }
+        })
+    
+        const smtpTrans = nodemailer.createTransport(mailConfig.config);
+        await smtpTrans.sendMail(mailConfig.templates.responseToInviteNotification(emailList, username, project.name, status, reason));
+        
         return { projectId, response, reason } 
     },
     invitePeer: async (params, userId) => {
@@ -99,8 +108,8 @@ module.exports = projectController = {
         await userModel.updateOne({ _id: user._id }, { $push : { invites: { project: project._id } } }).exec();
 
         // send invitation to his email
-        //const smtpTrans = nodemailer.createTransport(mailConfig.config);
-        //await smtpTrans.sendMail(mailConfig.templates.invitePeer(user.email, username, project.name));
+        const smtpTrans = nodemailer.createTransport(mailConfig.config);
+        await smtpTrans.sendMail(mailConfig.templates.invitePeer(user.email, username, project.name));
 
         return { username, userId: user._id, message: "invite was successful"} 
     },
@@ -117,16 +126,14 @@ module.exports = projectController = {
         /* Create self as peer with administrator permissions */
         const adminRole = permissions.find(e => e.name === 'Administrator');
               
-        params.peers = [
-            {
-                status: "accepted",
-                user: created_from,
-                permissions: adminRole._id,
-                title: "Ideator",
-                description: "Project Creator",
-                responseText: "Auto Accepted"
-            }
-        ]
+        params.peers = [{
+            status: "accepted",
+            user: created_from,
+            permissions: adminRole._id,
+            title: "Ideator",
+            description: "Project Creator",
+            responseText: "Auto Accepted"
+        }]
         const project = await projectModel.create(params);
         return `Created project - ${project._id}`
     },

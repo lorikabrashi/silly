@@ -88,6 +88,25 @@ module.exports = {
                  </p>
                 `
             }
+        },
+        /**
+         * @param { Array } emails - Email array of the user to notify
+         * @param { string } username - Username of the user
+         * @param { string } projectName - Project title
+         * @param { string } response - Response to invitation
+         * @param { string } reason - Response text to invitation
+        */
+        responseToInviteNotification: (emails, username, projectName, response, reason) => {
+            return {
+                from: process.env.EMAIL,
+                to: emails,
+                subject: `Silly - Project invitation response`,
+                text: `Dear Silly user. 
+                    The user with the name of ${username} has ${response} the invitation for the project ${projectName}.
+                    Response Text: ${reason}`,
+                html: `<h2>The user with the name of ${username} has ${response} the invitation for the project ${projectName}.</h2>
+                <p> <b>Response Text:</b> ${reason} </p>`
+            }        
         }
     }
 }
