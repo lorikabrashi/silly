@@ -9,14 +9,28 @@ const mailConfig = require('../helpers/mailConfig');
 const nodemailer = require('nodemailer');
 
 module.exports = projectController = {
-    invitationResponse: async( params, userId ) =>{
-        const { projectId, response, reason } = params
-        
-        /* TODO: */
-        //check project if exist
-        //check if user has been invited
-        // responde to invitation
+    invitationResponse: async( params, userId ) => {
 
+        const { projectId, response, reason } = params;
+
+        const project = await projectModel.findOne({ _id: projectId }).exec();
+        if(!project){
+            throw new ErrorWithStatusCode("Incorect project ID", 400);
+        }
+        const peerInvitation = project.peers.filter(e => { return e.user._id == userId });
+        if(peerInvitation.length === 0 ){
+            throw new ErrorWithStatusCode("No invitation found with this user Id", 404)
+        }
+        if(peerInvitation[0].status !== 'pending'){
+            throw new ErrorWithStatusCode("Already responded to this invitation", 401)
+        }
+
+        const status = response ? 'accepted' : 'rejected';
+        await userModel.updateOne({ _id: userId, 'invites.project': projectId }, { 'invites.$.status': status, 'invites.$.responseText': reason }).exec()
+        await projectModel.updateOne({ _id: projectId, 'peers.user': userId }, { 'peers.$.status': status, 'peers.$.responseText': reason }).exec()
+        
+        /* TODO: notify by email  */
+        return { projectId, response, reason } 
     },
     invitePeer: async (params, userId) => {
         
@@ -50,7 +64,6 @@ module.exports = projectController = {
         // Cannot invite self
         if(user._id == userId) throw new ErrorWithStatusCode('Bad request', 400);
        
- 
         let invitationStatus = {
             isInvited: false,
             invitationsSent: 1
@@ -78,22 +91,21 @@ module.exports = projectController = {
         };
        
         if(invitationStatus.isInvited){
-            await projectModel.updateOne({ _id: project._id }, { $pull : { 'peers': { user: user._id} }}).exec();             
+           // await projectModel.updateOne({ _id: project._id }, { $pull : { 'peers': { user: user._id} }}).exec();             
         }
         // store invite to user & store user as peer on the project
         await projectModel.updateOne({ _id: project._id }, { $push : { peers: invite }}).exec();
-    
+
         await userModel.updateOne({ _id: user._id }, { $push : { invites: { project: project._id } } }).exec();
 
         // send invitation to his email
-        const smtpTrans = nodemailer.createTransport(mailConfig.config);
-        await smtpTrans.sendMail(mailConfig.templates.invitePeer(user.email, username, project.title));
+        //const smtpTrans = nodemailer.createTransport(mailConfig.config);
+        //await smtpTrans.sendMail(mailConfig.templates.invitePeer(user.email, username, project.name));
 
         return { username, userId: user._id, message: "invite was successful"} 
-
     },
     create: async (params) => {
-        
+ 
         params = { name, description, license, categories, stage, created_from } = params;
         
         /* Get default permissions and add them to the project */
@@ -104,10 +116,15 @@ module.exports = projectController = {
         
         /* Create self as peer with administrator permissions */
         const adminRole = permissions.find(e => e.name === 'Administrator');
+              
         params.peers = [
             {
+                status: "accepted",
                 user: created_from,
-                permissions: adminRole._id
+                permissions: adminRole._id,
+                title: "Ideator",
+                description: "Project Creator",
+                responseText: "Auto Accepted"
             }
         ]
         const project = await projectModel.create(params);
