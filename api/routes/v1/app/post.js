@@ -18,7 +18,6 @@ router.post('/invitation-response', /* catchException(auth.app.validateAccessTok
 }));
 
 
-
 router.post('/token', catchException(auth.app.validateAccessTokenExp), catchException(async (req, res) => {
     const { refreshToken } = req.body;
     const result = await controllers['auth'].generateNewAccessToken(req.decoded, refreshToken);
@@ -30,7 +29,5 @@ router.post('/sign-out', catchException(auth.app.validateAccessToken), catchExce
     const result = await controllers['auth'].logout(req.decoded._id, refreshToken);
     res.json(sendResponse(result))
 }));
-
-
 
 module.exports = router;

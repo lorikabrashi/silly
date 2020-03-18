@@ -46,7 +46,6 @@ module.exports = {
 	},
     createFolder:(dir) => {
 		if (!fs.existsSync(dir)){
-            
 			fs.mkdirSync(dir);
 		}
 	},

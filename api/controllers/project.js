@@ -43,8 +43,6 @@ module.exports = projectController = {
     },
     invitePeer: async (params, userId) => {
         
-        /* TODO: SETUP A CRON JOB TO AUTO REJECT AFTER 1 WEEK OF NO RESPONSE */
-        
         const { projectId, username, permissionsId, title, description } = params;
 
         const project = await projectModel.findOne({ _id: projectId }).exec();
@@ -53,7 +51,6 @@ module.exports = projectController = {
         }
 
         // check if userId is the project owner or has the permissions to send invitation about project
-        
         if(userId != project.created_from._id){
             
             if(project.peers.length === 0) throw new ErrorWithStatusCode('No sufficient permissions', 401);
@@ -100,14 +97,14 @@ module.exports = projectController = {
         };
        
         if(invitationStatus.isInvited){
-           // await projectModel.updateOne({ _id: project._id }, { $pull : { 'peers': { user: user._id} }}).exec();             
+            await projectModel.updateOne({ _id: project._id }, { $pull : { 'peers': { user: user._id} }}).exec();             
         }
+        
         // store invite to user & store user as peer on the project
         await projectModel.updateOne({ _id: project._id }, { $push : { peers: invite }}).exec();
-
         await userModel.updateOne({ _id: user._id }, { $push : { invites: { project: project._id } } }).exec();
 
-        // send invitation to his email
+        // send invitation to email
         const smtpTrans = nodemailer.createTransport(mailConfig.config);
         await smtpTrans.sendMail(mailConfig.templates.invitePeer(user.email, username, project.name));
 
