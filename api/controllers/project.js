@@ -37,7 +37,7 @@ module.exports = projectController = {
         })
     
         const smtpTrans = nodemailer.createTransport(mailConfig.config);
-        await smtpTrans.sendMail(mailConfig.templates.responseToInviteNotification(emailList, username, project.name, status, reason));
+        await smtpTrans.sendMail(mailConfig.templates.responseToInvite(emailList, username, project.name, status, reason));
         
         return { projectId, response, reason } 
     },

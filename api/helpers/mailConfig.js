@@ -75,14 +75,19 @@ module.exports = {
                 to: email,
                 subject: `Silly - Project invitation`,
                 text: `Dear ${username}, you have been invited to participate in the following project: ${projectName}.
+                    
+                    The invitation will expire in one week.
+
                     Please follow the link to resond to the invitaion  
-                
+
                     ${responseUrl}
-                
+
                 `,
                 html: `<h2> Dear ${username}, you have been invited to participate in the following project: ${projectName}. </h2>
                 
                 <p>
+                    The invitation will expire in one week.
+
                     Please click on the link to resond to the invitaion
                     <a href="${responseUrl}"> Respond to invite </a>
                  </p>
@@ -96,7 +101,7 @@ module.exports = {
          * @param { string } response - Response to invitation
          * @param { string } reason - Response text to invitation
         */
-        responseToInviteNotification: (emails, username, projectName, response, reason) => {
+        responseToInvite: (emails, username, projectName, response, reason) => {
             return {
                 from: process.env.EMAIL,
                 to: emails,
@@ -107,6 +112,18 @@ module.exports = {
                 html: `<h2>The user with the name of ${username} has ${response} the invitation for the project ${projectName}.</h2>
                 <p> <b>Response Text:</b> ${reason} </p>`
             }        
+        },
+        invitationExpired: (email, username, projectName) => {
+            return {
+                from: process.env.EMAIL,
+                to: email,
+                subject: `Silly - Project Invitation expired`,
+                text: `Dear ${username}, the invitations for the project ${projectName} has expired.
+                It was auto rejcted in order to inform other project peers.  
+                `,
+                html: `<h2>Dear ${username}, the invitations for the project ${projectName} has expired.</h2>
+                <p>It was auto rejcted in order to inform other prject peers.</p>`
+            }
         }
     }
 }
