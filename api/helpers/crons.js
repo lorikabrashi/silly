@@ -2,7 +2,6 @@ const CronJob = require('cron').CronJob;
 const projectModel = require('../models/project');
 const userModel = require('../models/user');
 const mailConfig = require('./mailConfig');
-const nodemailer = require('nodemailer');
 
 const autoRejectInvitations = async () => {
 
@@ -63,12 +62,11 @@ const autoRejectInvitations = async () => {
             expireDate.setDate(expireDate.getDate() + 7);
             if(new Date() > expireDate){
                 username = peer.user.username;
-                const smtpTrans = nodemailer.createTransport(mailConfig.config);
-                await smtpTrans.sendMail( mailConfig.templates.invitationExpired(peer.user.email, peer.user.username, project.name ));
+               
+               await mailConfig.sendMail(mailConfig.templates.invitationExpired(peer.user.email, peer.user.username, project.name ))
             }
         })
-        const smtpTrans = nodemailer.createTransport(mailConfig.config);
-        await smtpTrans.sendMail( mailConfig.templates.responseToInvite(peerEmails, username, project.name, '(auto) Rejected', 'Inactivity for one week')); 
+        await mailConfig.sendMail( mailConfig.templates.responseToInvite(peerEmails, username, project.name, '(auto) Rejected', 'Inactivity for one week')); 
     });
 }
 

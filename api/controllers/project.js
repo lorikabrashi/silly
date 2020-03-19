@@ -6,7 +6,6 @@ const ErrorWithStatusCode = require('../helpers/ErrorWithStatusCode')
 const { excractFields, getDefaultQueryParams } = require('../helpers/general');
 
 const mailConfig = require('../helpers/mailConfig');
-const nodemailer = require('nodemailer');
 
 module.exports = projectController = {
     invitationResponse: async(params, userId) => {
@@ -36,8 +35,7 @@ module.exports = projectController = {
             }
         })
     
-        const smtpTrans = nodemailer.createTransport(mailConfig.config);
-        await smtpTrans.sendMail(mailConfig.templates.responseToInvite(emailList, username, project.name, status, reason));
+        await mailConfig.sendMail(mailConfig.templates.responseToInvite(emailList, username, project.name, status, reason));
         
         return { projectId, response, reason } 
     },
@@ -105,8 +103,7 @@ module.exports = projectController = {
         await userModel.updateOne({ _id: user._id }, { $push : { invites: { project: project._id } } }).exec();
 
         // send invitation to email
-        const smtpTrans = nodemailer.createTransport(mailConfig.config);
-        await smtpTrans.sendMail(mailConfig.templates.invitePeer(user.email, username, project.name));
+        await mailConfig.sendMail(mailConfig.templates.invitePeer(user.email, username, project.name));
 
         return { username, userId: user._id, message: "invite was successful"} 
     },

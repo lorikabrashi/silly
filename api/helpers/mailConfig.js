@@ -1,4 +1,6 @@
-module.exports = {
+const nodemailer = require('nodemailer');
+
+module.exports = _mail_ = {
     config: Object.freeze({
         host: process.env.EMAIL_HOST,
         port: 587,
@@ -12,6 +14,10 @@ module.exports = {
             pass: process.env.EMAIL_PASS 
         }
     }),
+    sendMail: async (templateOpt) => {
+        const smtpTrans = nodemailer.createTransport(_mail_.config);
+        await smtpTrans.sendMail(templateOpt);
+    },
     templates: {
         /**
          * @param { string } username - Username of the new user

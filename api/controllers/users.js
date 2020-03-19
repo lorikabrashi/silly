@@ -6,7 +6,6 @@ const bcrypt = require('bcrypt');
 const ErrorWithStatusCode = require('../helpers/ErrorWithStatusCode')
 const validations = require('../helpers/validations')
 const mailConfig = require('../helpers/mailConfig');
-const nodemailer = require('nodemailer');
 
 module.exports = userController = {
     resetPassword: async (params, token) => {
@@ -30,8 +29,8 @@ module.exports = userController = {
         }
         const JWT_data = { email };
         const token = jwt.sign(JWT_data, process.env.JWT_KEY_PASSWORD_RESET, { expiresIn: process.env.JWT_KEY_PASSWORD_RESET_EXP });
-        const smtpTrans = nodemailer.createTransport(mailConfig.config)
-        await smtpTrans.sendMail(mailConfig.templates.resetPassword(user.username, email, token));
+        
+        await mailConfig.sendMail(mailConfig.templates.resetPassword(user.username, email, token));
         return
     },
     verifyUser: async (token) => {
@@ -92,8 +91,8 @@ module.exports = userController = {
         
         const JWT_data = { email };
         const verification_token = jwt.sign(JWT_data, process.env.JWT_KEY_VERIFICATION, { expiresIn: process.env.JWT_KEY_VERIFICATION_EXP });
-        const smtpTrans =  nodemailer.createTransport(mailConfig.config)
-        await smtpTrans.sendMail(mailConfig.templates.verification(username, email, verification_token));
+        
+        await mailConfig.sendMail(mailConfig.templates.verification(username, email, verification_token));
 
         const user = await usersModel.create(params)
         return `Created user - ${user._id}`
