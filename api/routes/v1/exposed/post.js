@@ -7,7 +7,6 @@ const { validationResult } = require('express-validator');
 const { sendResponse } = require('../../../helpers/general');
 
 router.post('/login', catchException(async (req, res) => {
-
     const result = await controllers['auth'].login(req.body);
     res.json(sendResponse(result))
 }));
@@ -30,7 +29,6 @@ router.post('/forgot-password/:code', validations.password, catchException(async
 
 
 router.post('/register-admin', validations.users, catchException(async (req, res) => {
-    
     const errorResults = validationResult(req);
     if (!errorResults.isEmpty()) throw new ErrorWithStatusCode(errorResults.errors[0].msg, 400)
 

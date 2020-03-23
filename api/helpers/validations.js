@@ -53,6 +53,18 @@ module.exports = _validators = {
         check('stage', 'Stage must be one of these values: "initiation", "planning", "execution" or "closure"').isIn(['initiation', 'planning', 'execution', 'closure' ]), 
         check('created_from', 'created_from cannot be empty and must be an id reference to a user').notEmpty().isMongoId()//TODO - Get from access token
     ],
+    invitePeer: [
+        check('title', 'Position Title cannot be empty').notEmpty(),
+        check('description', 'Position description cannot be empty').notEmpty(),
+        check('username', 'Username cannot be empty').notEmpty(),
+        check('projectId', 'projectId cannot be empty and must be an id refrence to one of your projects').notEmpty().isMongoId(),
+        check('permissionsId', 'permissionsId cannot be empty and must be an id refrence to a permission').notEmpty().isMongoId(),
+    ],
+    invitationResponse: [
+        check('reason', 'Response reason cannot be empty').notEmpty(),
+        check('response', 'Response cannot be empty and needs to be a boolean value').notEmpty().isBoolean(),
+        check('projectId', 'projectId cannot be empty and must be an id refrence to one of your projects').notEmpty().isMongoId(),
+    ],
     /**
      * @param { string } password - Validate password 
     */

@@ -6,7 +6,7 @@ const { excractFields, getDefaultQueryParams } = require('../helpers/general');
 module.exports = permissionController = {
     createCustom: async (params) => {
         validateReqFields(params, ['parent_id'])
-        const { parent_id } =  params;
+        const { parent_id } = params;
         params = { name, description, permissions } = params;
         params.config = {
             type: 'Custom',

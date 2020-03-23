@@ -71,7 +71,6 @@ module.exports = _crons = {
      * Starts all cron jobs (Will effect only functions that start with "job_")
     */
     startAll: () => {
-
         Object.values( _crons ).forEach( func => { 
         if(typeof func === 'function' && func.name.startsWith('job_')) {
             func();

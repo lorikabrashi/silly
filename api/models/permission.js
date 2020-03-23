@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const permissionAttribute = { type: Boolean, default: false };
 const permissionSchema = new mongoose.Schema({
-    name: { type: String, required: true, unique: true },
+    name: { type: String, required: true },
     description: { type: String, required: true },
     config: {
         type: { type: String, enum: ['Default', 'Custom'], default: 'Custom' },

@@ -68,6 +68,14 @@ module.exports = projectController = {
         // Cannot invite self
         if(user._id == userId) throw new ErrorWithStatusCode('Bad request', 400);
        
+
+       //check that permission type is default or a permission is set in the project
+        const permission = await  permissionsModel.findOne({_id: permissionsId}).exec();
+        if(!permission) throw new ErrorWithStatusCode('No permission found with the given id', 404);
+        if(permission.config.type !== 'Default'){
+            if(permission.config.parent_id != projectId)  
+            throw new ErrorWithStatusCode('No permission found with the given id', 404);
+        }
         let invitationStatus = {
             isInvited: false,
             invitationsSent: 1
