@@ -22,7 +22,7 @@ router.post('/sign-out', catchException(auth.adm.validateAccessToken), catchExce
 }));
 
 router.post('/:resource', /* catchException(auth.adm.validateAccessToken), */  catchException(async function(req, res){
-    	
+    
     const resource = req.params.resource;
 	const controller = controllers[resource];
 

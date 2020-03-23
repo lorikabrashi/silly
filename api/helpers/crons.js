@@ -5,11 +5,9 @@ const mailConfig = require('./mailConfig');
 
 const autoRejectInvitations = async () => {
 
-    //Check possible bug when users are updated: it updates all users with pending status to rejected 
-    //Correct solution : Check date and update only those users that have expired and update them to rejceted 
-
     const getQuery = (resource, time) => {
-        const filterKey = resource + '.$[elem].status';
+        const updateStatusKey = resource + '.$.status';
+        const updateTextKey = resource + '.$.responseText';
         return {  
             find: {   
                 [resource] : {
@@ -20,13 +18,10 @@ const autoRejectInvitations = async () => {
                 }
             },
             update: {
-                [filterKey]: 'rejected',
-                responseText: 'auto rejcted (inactivity)'
+                [updateStatusKey]: 'rejected',
+                [updateTextKey]: 'auto rejcted (inactivity)'
             },
-            filter: {
-                arrayFilters: [{'elem.status': 'pending' }],
-                multi: true
-            }  
+            opt: { multi: true }  
         };
     }
 
@@ -36,19 +31,20 @@ const autoRejectInvitations = async () => {
     const userQuery = getQuery('invites', weekAgo);
 
     const projects = await projectModel.find(projectQuery.find).exec();
-   
+    
     await userModel.update(
         userQuery.find,
         userQuery.update,
-        userQuery.filter 
+        userQuery.opt 
     ).exec()
 
     await projectModel.update(
         projectQuery.find,
         projectQuery.update,
-        projectQuery.filter 
+        projectQuery.opt 
     ).exec();
 
+    //Notify other users
     projects.forEach(async project => {
         const pendingPeers = project.peers.filter(e => e.status === 'pending');
         const peers = project.peers.filter(e => e.status === 'accepted');
@@ -62,7 +58,7 @@ const autoRejectInvitations = async () => {
             expireDate.setDate(expireDate.getDate() + 7);
             if(new Date() > expireDate){
                 username = peer.user.username;
-               
+ 
                await mailConfig.sendMail(mailConfig.templates.invitationExpired(peer.user.email, peer.user.username, project.name ))
             }
         })
@@ -75,13 +71,12 @@ module.exports = _crons = {
      * Starts all cron jobs (Will effect only functions that start with "job_")
     */
     startAll: () => {
-        
-        //autoRejectInvitations();
+
         Object.values( _crons ).forEach( func => { 
         if(typeof func === 'function' && func.name.startsWith('job_')) {
             func();
             } 
-        });
+        }); 
     },
     /**
      * Reject project invitations that are pending for at least 1 week.
