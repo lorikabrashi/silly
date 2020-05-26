@@ -1,44 +1,81 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const auth = require('../../../middlewares/auth');
-const catchException = require('../../../middlewares/catchException');
-const controllers = require('../../../controllers/')
-const ErrorWithStatusCode = require('../../../helpers/ErrorWithStatusCode')
-const { sendResponse } = require('../../../helpers/general');
-const validations = require('../../../helpers/validations');
-const { validationResult } = require('express-validator');
+const auth = require("../../../middlewares/auth");
+const catchException = require("../../../middlewares/catchException");
+const controllers = require("../../../controllers/");
+const ErrorWithStatusCode = require("../../../helpers/ErrorWithStatusCode");
+const { sendResponse } = require("../../../helpers/general");
+const validations = require("../../../helpers/validations");
 
+//Project
+router.post(
+	"/remove-category",
+	catchException(auth.adm.validateAccessToken),
+	validations.addRemoveCategories,
+	catchException(async (req, res) => {
+		validations.checkResults(req);
+		const { projectId, catIds } = req.body;
+        const results = await controllers['projects'].addCategories(projectId, catIds);
+        res.json(sendResponse(results));
+    })
+);
 
-router.get('/token', catchException(auth.adm.validateAccessTokenExp), catchException(async (req, res) => {
-    const { refreshToken } = req.body;
-    const result = await controllers['auth'].generateNewAccessToken(req.decoded, refreshToken);
-    res.json(sendResponse(result))
-}));
+router.post(
+	"/remove-category",
+	catchException(auth.adm.validateAccessToken),
+	validations.addRemoveCategories,
+	catchException(async (req, res) => {
+		validations.checkResults(req);
+		const { projectId, catIds } = req.body;
+        const results = await controllers['projects'].removeCategories(projectId, catIds);
+        res.json(sendResponse(results));
+    })
+);
 
-router.post('/sign-out', catchException(auth.adm.validateAccessToken), catchException(async (req, res) => {
-    const { refreshToken } = req.body;
-    const result = await controllers['auth'].logout(req.decoded._id, refreshToken);
-    res.json(sendResponse(result))
-}));
+router.post(
+	"/token",
+	catchException(auth.adm.validateAccessTokenExp),
+	validations.refreshToken,
+	catchException(async (req, res) => {
 
-router.post('/:resource', /* catchException(auth.adm.validateAccessToken), */  catchException(async function(req, res){
-    
-    const resource = req.params.resource;
-	const controller = controllers[resource];
+		validations.checkResults(req);
 
-	if (controller == null || typeof controller.create !== "function")
-		throw new ErrorWithStatusCode('Resource not found :' + resource, 404)
+		const { refreshToken } = req.body;
+		const result = await controllers["auth"].generateNewAccessToken(req.decoded, refreshToken);
+		res.json(sendResponse(result));
+	})
+);
 
-    if(resource in validations){
-        await Promise.all(validations[resource].map(validation => validation.run(req)));
+router.post(
+	"/sign-out",
+	catchException(auth.adm.validateAccessToken),
+	validations.refreshToken,
+	catchException(async (req, res) => {
+		validations.checkResults(req);
+		const { refreshToken } = req.body;
+		const result = await controllers["auth"].logout(req.decoded._id, refreshToken);
+		res.json(sendResponse(result));
+	})
+);
 
-        const errorResults = validationResult(req);
-        if (!errorResults.isEmpty()) throw new ErrorWithStatusCode(errorResults.errors[0].msg, 400)
-    }
+router.post(
+	"/:resource",
+	catchException(auth.adm.validateAccessToken),
+	catchException(async (req, res) => {
+		const resource = req.params.resource;
+		const controller = controllers[resource];
 
-    const results = await controller.create(req.body);
-    res.json(sendResponse(results))
+		if (controller == null || typeof controller.create !== "function") {
+			throw new ErrorWithStatusCode("Resource not found :" + resource, 404);
+		}
+		if (resource in validations) {
+			await Promise.all(validations[resource].map((validation) => validation.run(req)));
+			validations.checkResults(req);
+		}
 
-}));
+		const results = await controller.create(req.body);
+		res.json(sendResponse(results));
+	})
+);
 
 module.exports = router;

@@ -66,13 +66,18 @@ module.exports = authStrategies = {
 
         await redisAddToList(user._id.toString(), newRefreshToken);
         
-        return { accessToken, refreshToken: newRefreshToken};
+        const userData = await usersModel.findOne({_id: user._id}).exec()
+        return { user: { ...excractFields(userData, ['_id', 'username', 'email' ]) },  refreshToken: newRefreshToken, accessToken };
     },
 
     login: async (params) => {
         
-        const { username, password, email } = params;
+        const { username, password, email, type } = params;
         const data = {};
+        
+        // "type" can be admin/user depending on the front app 
+        if(!type) throw new ErrorWithStatusCode('Please provide the platform', 400);
+        data.role = type;
 
         if ( (email && password) && email.length > 0 && password.length > 0) {
             data.email = email;
@@ -102,7 +107,7 @@ module.exports = authStrategies = {
 
         redisAddToList(user._id.toString(), refreshToken);
 
-        return { ...excractFields(user, ['_id', 'username', 'email' ]), refreshToken, accessToken };
+        return { user: { ...excractFields(user, ['_id', 'username', 'email' ]) }, refreshToken, accessToken };
     },
 
     logout: async (_id, refreshToken) => {

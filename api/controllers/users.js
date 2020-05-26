@@ -37,7 +37,7 @@ module.exports = userController = {
         const decoded = await new Promise( ( resolve, reject ) => { 
             jwt.verify(token, process.env.JWT_KEY_VERIFICATION, (err, decoded) => {
                 if(err){
-                    reject(err);
+                    reject(err)
                 }
                 resolve(decoded)
             })
@@ -53,8 +53,29 @@ module.exports = userController = {
         await usersModel.updateOne({ _id: user._id }, { verified: true }).exec();
         return
     },
+    updateAvatar: async(id, avatar) => {
+        const user = await usersModel.findById(id).exec();
+        if('profile' in user._doc){
+            await profilesModel.update({ _id: user.profile }, { avatar } ).exec();
+        }
+        else {
+            const profile = await profilesModel.create({ avatar });
+            await usersModel.update({_id: id }, { profile: profile._id } ).exec();
+        }
+        return 'Avatar Updated'
+    },
+    updatePassword: async(id, password) => {
+        password = bcrypt.hashSync(password, parseInt(process.env.SALT_ROUNDS));
+        return await usersModel.update({ _id: id }, { password }).exec()
+    },
+    //Update user and profile fields 
     updateProfile: async(id, params) => {
-        params = { first_name, last_name, image, phone_number } = params;
+        params = { username, first_name, last_name, phone_number } = params;
+        
+        if(username){
+            await usersModel.update({_id: id}, { username }).exec();                
+        }
+
         const user = await usersModel.findById(id).exec();
         if('profile' in user._doc){
             const profileID = user.profile;
@@ -67,7 +88,11 @@ module.exports = userController = {
         
         return await userController.findById(id);
     },
-    
+    hasAdmin: async () => {
+        const countAdmins = await usersModel.count({role: 'admin'}).exec();
+        if(countAdmins) return true
+        return false
+    },
     registerAdmin: async (params, installation) => {
         
         if(installation){
@@ -95,8 +120,7 @@ module.exports = userController = {
         await mailConfig.sendMail(mailConfig.templates.verification(username, email, verification_token));
 
         const user = await usersModel.create(params)
-        return `Created user - ${user._id}`
-    
+        return `Created user - ${user._id}`    
     },
 
     create: async (params) => {
@@ -111,10 +135,10 @@ module.exports = userController = {
         return `Created user - ${user._id}`
     },
 
-    find: async (qParams = {}) => {
-  
+    find: async (qParams = {}, body = {}) => {
+
         qParams = getDefaultQueryParams(qParams);
-        const users = await usersModel.find({}, { password: 0, __v: 0 }, { skip: qParams.offset, limit : qParams.limit });
+        const users = await usersModel.find(body, { password: 0, __v: 0 }, { skip: qParams.offset, limit : qParams.limit });
 
         return Array.from(users).map(user => {
             return excractFields(user, qParams.fields);

@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const getTokenFromHeader = (req) => {
     let token = req.headers['x-access-token'] || req.headers['authorization'];        
     if (!token) {
-        throw new ErrorWithStatusCode('Auth token is not supplied', 400);
+        throw new ErrorWithStatusCode('Auth token is not supplied', 401);
     }
     if (token.startsWith('Bearer ')) {
         token = token.slice(7, token.length);
@@ -13,9 +13,7 @@ const getTokenFromHeader = (req) => {
 }
 
 const validateTokenExp = (req, next, key, role) => {
-
     const token = getTokenFromHeader(req);
-
     jwt.verify(token, key, (err, decoded) => {
         if(err && err.name === 'TokenExpiredError'){
             decoded = jwt.decode(token, key);
@@ -30,11 +28,9 @@ const validateTokenExp = (req, next, key, role) => {
 }
 
 const validateToken = (req, next, key, role) => {
-
     const token = getTokenFromHeader(req);      
-
-    jwt.verify(token, key, (err, decoded) => {   
-        if(err) throw new ErrorWithStatusCode('Token is not valid', 401);
+    jwt.verify(token, key, (err, decoded) => {  
+        if(err) throw new ErrorWithStatusCode('Token has expired', 480);
         if(decoded.role !== role) throw new ErrorWithStatusCode('Token is not valid', 401);
         req.decoded = decoded;
         next();

@@ -1,6 +1,10 @@
 # Logs
 logs
 *.log
+
+# Ignore uploads
+public/uploads
+
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*

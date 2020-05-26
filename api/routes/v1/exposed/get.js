@@ -8,6 +8,11 @@ router.get('/', catchException( async (req, res) => {
     res.json(sendResponse('Silly API'))
 }));
 
+router.get('/has-admin', catchException(async (req, res) => {
+    const hasAdmin = await controllers['users'].hasAdmin();
+    res.json(sendResponse(hasAdmin));
+}))
+
 router.get('/email-verification/:code', catchException( async (req, res) => {
     const code = req.params.code
     await controllers['users'].verifyUser(code);

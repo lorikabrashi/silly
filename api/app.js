@@ -51,7 +51,7 @@ app.use('/api/v1/adm', adminRoutes);
 app.use('/api/v1/app', appRoutes);
 
 app.use((error, req, res, next) => {
-    console.log(error);
+    //console.log(error);
     res.status(error.statusCode || 500).json(generalHelpers.sendResponse(error, false)) 
 });
 

@@ -48,7 +48,7 @@ module.exports = _mail_ = {
          * @param { string } token - JWT to be send by email for verifying 
         */
         resetPassword: (username, email, token) => {
-            const resetUrl = `${process.env.CLIENT_URL}/forgot-password?code=${token}`;
+            const resetUrl = `${process.env.CLIENT_URL}/reset-password?code=${token}`;
             return {
                 from: process.env.EMAIL,
                 to: email,

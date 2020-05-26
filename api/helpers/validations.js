@@ -1,10 +1,13 @@
-const { check } = require('express-validator');
+const { check, validationResult } = require('express-validator');
 const ErrorWithStatusCode = require('./ErrorWithStatusCode')
 const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$.!%*#?&])[A-Za-z\d@$.!%*#?&]{8,}$/;
 const passwordMessage = 'Password should not be empty, minimum six characters, at least one letter, one number and one special character';
 
 module.exports = _validators = {
-     password: [
+    refreshToken: [
+        check('refreshToken', 'Refresh Token cannot be empty').notEmpty()
+    ],
+    password: [
         check('password', passwordMessage).exists().isLength({ min: 6 }).matches(passwordRegex)
     ],
     email: [
@@ -25,6 +28,10 @@ module.exports = _validators = {
     ],
     categories: [
         check('name', 'Category name cannot be empty').notEmpty(),
+    ],
+    addRemoveCategories: [
+        check('projectId', 'projectId cannot be empty and must be a project ID').isMongoId().notEmpty(),
+        check('catIds', "Categories not selected").isArray().notEmpty()
     ],
     permissions: [
         check('name', 'Permission name cannot be empty').notEmpty(),
@@ -85,5 +92,12 @@ module.exports = _validators = {
                 throw new ErrorWithStatusCode(`${elem} cannot be empty`, 400);
             }
         });
+    },
+    /**
+     * @param { object } req - request object to validate
+    */
+    checkResults: (req) => {
+        const errorResults = validationResult(req);
+        if (!errorResults.isEmpty()) throw new ErrorWithStatusCode(errorResults.errors[0].msg, 400)
     }
 }
