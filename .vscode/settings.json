@@ -2,4 +2,7 @@
     "cSpell.words": [
         "mixins"
     ],
+    "path-intellisense.mappings": {
+        "@": "${workspaceRoot}/dashboard/src"
+    },
 }
