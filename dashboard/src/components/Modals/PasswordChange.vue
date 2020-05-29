@@ -26,8 +26,8 @@
 			</b-row>
 		</b-container>
 		<template v-slot:modal-footer>
-			<b-button variant="secondary" @click="$refs.passwordModal.hide()">Cancel</b-button>
-			<b-button variant="primary" @click="save">Save changes</b-button>
+			<b-button variant="info" @click="$refs.passwordModal.hide()">Cancel</b-button>
+			<b-button variant="success" @click="save">Save changes</b-button>
 		</template>
 	</b-modal>
 </template>

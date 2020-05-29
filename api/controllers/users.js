@@ -1,6 +1,6 @@
 const usersModel = require('../models/user');
 const profilesModel = require('../models/profile');
-const { excractFields, getDefaultQueryParams } = require('../helpers/general');
+const { extractFields, getDefaultQueryParams } = require('../helpers/general');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const ErrorWithStatusCode = require('../helpers/ErrorWithStatusCode')
@@ -141,7 +141,7 @@ module.exports = userController = {
         const users = await usersModel.find(body, { password: 0, __v: 0 }, { skip: qParams.offset, limit : qParams.limit });
 
         return Array.from(users).map(user => {
-            return excractFields(user, qParams.fields);
+            return extractFields(user, qParams.fields);
         })
     },
 
@@ -150,7 +150,7 @@ module.exports = userController = {
         qParams = getDefaultQueryParams(qParams);
         const user = await usersModel.findById(id, { password: 0, __v: 0 }, { skip: qParams.offset, limit : qParams.limit });
 
-        return excractFields(user, qParams.fields);        
+        return extractFields(user, qParams.fields);        
     },
 
     update: async(id, params) => {

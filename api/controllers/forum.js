@@ -2,7 +2,7 @@ const forumModel = require('../models/forum');
 const positionModel = require('../models/position');
 const projectModel = require('../models/project');
 const ErrorWithStatusCode = require('../helpers/ErrorWithStatusCode')
-const { excractFields, getDefaultQueryParams } = require('../helpers/general');
+const { extractFields, getDefaultQueryParams } = require('../helpers/general');
 const { validateReqFields } = require ('../helpers/validations');
 module.exports = forumController = {
     create: async (params) => {
@@ -32,13 +32,13 @@ module.exports = forumController = {
         const posts = await forumModel.find({}, { __v: 0 }, { skip: qParams.offset, limit : qParams.limit });
 
         return Array.from(posts).map(post => {
-            return excractFields(post, qParams.fields);
+            return extractFields(post, qParams.fields);
         });
     },
     findById: async (id, qParams) => {
         qParams = getDefaultQueryParams(qParams);
         const post = await forumModel.findById(id, { __v: 0 }, { skip: qParams.offset, limit : qParams.limit });
-        return excractFields(post, qParams.fields);
+        return extractFields(post, qParams.fields);
     },
     update: async(id, params) => {
         params = { title, content, attachments } = params;

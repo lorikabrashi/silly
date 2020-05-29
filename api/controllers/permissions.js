@@ -1,7 +1,7 @@
 const permissionModel = require('../models/permission')
 const ErrorWithStatusCode = require('../helpers/ErrorWithStatusCode')
 const { validateReqFields } = require ('../helpers/validations');
-const { excractFields, getDefaultQueryParams } = require('../helpers/general');
+const { extractFields, getDefaultQueryParams } = require('../helpers/general');
 
 module.exports = permissionController = {
     createCustom: async (params) => {
@@ -26,13 +26,13 @@ module.exports = permissionController = {
         const permissions = await permissionModel.find({}, { __v: 0 }, { skip: qParams.offset, limit : qParams.limit });
 
         return Array.from(permissions).map(permission => {
-            return excractFields(permission, qParams.fields);
+            return extractFields(permission, qParams.fields);
         })
     },
     findById: async (id, qParams) => {
         qParams = getDefaultQueryParams(qParams);
         const permission = await permissionModel.findById(id, { __v: 0 }, { skip: qParams.offset, limit : qParams.limit });
-        return excractFields(permission, qParams.fields);
+        return extractFields(permission, qParams.fields);
     },
     update: async(id, params) => {
         params = { name, description, permissions } = params;

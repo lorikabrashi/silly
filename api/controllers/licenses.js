@@ -1,6 +1,6 @@
 const licenseModel = require('../models/license')
 const ErrorWithStatusCode = require('../helpers/ErrorWithStatusCode')
-const { excractFields, getDefaultQueryParams } = require('../helpers/general');
+const { extractFields, getDefaultQueryParams } = require('../helpers/general');
 
 module.exports = licenseController = {
     create: async (params) => {
@@ -13,13 +13,13 @@ module.exports = licenseController = {
         const licenses = await licenseModel.find({}, { __v: 0 }, { skip: qParams.offset, limit : qParams.limit });
 
         return Array.from(licenses).map(license => {
-            return excractFields(license, qParams.fields);
+            return extractFields(license, qParams.fields);
         })
     },
     findById: async (id, qParams) => {
         qParams = getDefaultQueryParams(qParams);
         const license = await licenseModel.findById(id, { __v: 0 }, { skip: qParams.offset, limit : qParams.limit });
-        return excractFields(license, qParams.fields);
+        return extractFields(license, qParams.fields);
     },
     update: async(id, params) => {
         params = { name, description } = params;

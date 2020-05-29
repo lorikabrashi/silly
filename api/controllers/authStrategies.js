@@ -2,7 +2,7 @@ const usersModel = require('../models/user');
 const bcrypt = require('bcrypt');
 const ErrorWithStatusCode = require('../helpers/ErrorWithStatusCode')
 const jwt = require('jsonwebtoken');
-const { excractFields } = require('../helpers/general');
+const { extractFields } = require('../helpers/general');
 const redis = require('redis');
 
 
@@ -67,7 +67,7 @@ module.exports = authStrategies = {
         await redisAddToList(user._id.toString(), newRefreshToken);
         
         const userData = await usersModel.findOne({_id: user._id}).exec()
-        return { user: { ...excractFields(userData, ['_id', 'username', 'email' ]) },  refreshToken: newRefreshToken, accessToken };
+        return { user: { ...extractFields(userData, ['_id', 'username', 'email' ]) },  refreshToken: newRefreshToken, accessToken };
     },
 
     login: async (params) => {
@@ -107,7 +107,7 @@ module.exports = authStrategies = {
 
         redisAddToList(user._id.toString(), refreshToken);
 
-        return { user: { ...excractFields(user, ['_id', 'username', 'email' ]) }, refreshToken, accessToken };
+        return { user: { ...extractFields(user, ['_id', 'username', 'email' ]) }, refreshToken, accessToken };
     },
 
     logout: async (_id, refreshToken) => {

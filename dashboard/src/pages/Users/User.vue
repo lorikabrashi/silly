@@ -46,7 +46,7 @@
 							<div role="group" class="form-row form-group" horizontal="" breakpoint="md">
 								<label for="password" class="col-4 col-form-label text-md-right">Password</label>
 								<div class="col">
-									<button type="button" @click="toggleModal" class="btn mr-2 btn-sm btn-primary">Change</button>
+									<button type="button" @click="toggleModal" class="btn mr-2 btn-sm btn-info">Change</button>
 								</div>
 							</div>
 
@@ -70,12 +70,12 @@
 							<div role="group" class="form-row form-group" horizontal="" breakpoint="md">
 								<label for="phone_number" class="col-4 col-form-label text-md-right">Phone Number</label>
 								<div class="col">
-									<input v-model="user.profile.phone_number" class="col form-control" ref="phone_number" type="tel" name="phone_number" />
+									<input v-model="user.profile.phone_number"  @input="softValidatePhone" class="col form-control" ref="phone_number" type="tel" name="phone_number" />
 								</div>
 							</div>
 
 							<div class="text-md-right mt-sm">
-								<button type="submit" class="btn mr-2 btn-danger">Update</button>
+								<button type="submit" class="btn mr-2 btn-success">Update</button>
 							</div>
 						</form>
 					</Widget>
@@ -118,11 +118,11 @@ export default {
 		ProjectDetailsModal,
 		Avatar,
 	},
-	props: ["userId"],
+    props: ["userId"],
 	computed: {
 		loggedInId() {
 			return this.$store.state.auth.user._id;
-		},
+        },
 	},
 	data() {
 		return {
@@ -137,13 +137,16 @@ export default {
 				filterable: false,
 			},
 		};
-	},
+    },
 	async created() {
 		await this.getUserData();
 		this.setInviteDetails();
 	},
 
 	methods: {
+        myTest(){
+            alert('ok')
+        },
 		isCurrentUser() {
 			return this.loggedInId === this.user._id;
 		},
@@ -231,7 +234,10 @@ export default {
 		},
 		closeProjectDetails() {
 			this.projectModal = false;
-		},
+        },
+        softValidatePhone(){
+            console.log(this.user.profile.phone_number)
+        }
 	},
 };
 </script>

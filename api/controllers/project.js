@@ -3,7 +3,7 @@ const permissionsModel = require("../models/permission");
 const userModel = require("../models/user");
 
 const ErrorWithStatusCode = require("../helpers/ErrorWithStatusCode");
-const { excractFields, getDefaultQueryParams } = require("../helpers/general");
+const { extractFields, getDefaultQueryParams } = require("../helpers/general");
 
 const mailConfig = require("../helpers/mailConfig");
 
@@ -153,13 +153,13 @@ module.exports = projectController = {
 		const projects = await projectModel.find({}, { __v: 0 }, { skip: qParams.offset, limit: qParams.limit });
 
 		return Array.from(projects).map((project) => {
-			return excractFields(project, qParams.fields);
+			return extractFields(project, qParams.fields);
 		});
 	},
 	findById: async (id, qParams) => {
 		qParams = getDefaultQueryParams(qParams);
 		const project = await projectModel.findById(id, { __v: 0 }, { skip: qParams.offset, limit: qParams.limit });
-		return excractFields(project, qParams.fields);
+		return extractFields(project, qParams.fields);
 	},
 	update: async (id, params) => {
 		params = { name, description, license, categories, stage } = params;

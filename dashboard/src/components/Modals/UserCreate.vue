@@ -43,8 +43,8 @@
 			</b-row>
 		</b-container>
 		<template v-slot:modal-footer>
-			<b-button variant="secondary" @click="$refs.UserModal.hide()">Cancel</b-button>
-			<b-button variant="primary" @click="create">Create</b-button>
+			<b-button variant="info" @click="$refs.UserModal.hide()">Cancel</b-button>
+			<b-button variant="success" @click="create">Create</b-button>
 		</template>
 	</b-modal>
 </template>

@@ -13,7 +13,7 @@
         </pre
 		>
 		<template v-slot:modal-footer>
-			<b-button variant="primary" @click="$refs.projectDetails.hide()">Close</b-button>
+			<b-button variant="info" @click="$refs.projectDetails.hide()">Close</b-button>
 		</template>
 	</b-modal>
 </template>

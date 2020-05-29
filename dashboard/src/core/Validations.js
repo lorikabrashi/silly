@@ -42,9 +42,9 @@ const _validations_ = {
             validation.isValid = false;
         }
 
-        const validPasword = _validations_.validatePassword(user.password, user.confPassword);
-        if(!validPasword.isValid){
-            validation.message += validPasword.message;
+        const validPassword = _validations_.validatePassword(user.password, user.confPassword);
+        if(!validPassword.isValid){
+            validation.message += validPassword.message;
             validation.isValid = false;
         }
         return validation;

@@ -1,7 +1,7 @@
 const positionModel = require('../models/position');
 const projectModel = require('../models/project');
 const ErrorWithStatusCode = require('../helpers/ErrorWithStatusCode');
-const { excractFields, getDefaultQueryParams } = require('../helpers/general');
+const { extractFields, getDefaultQueryParams } = require('../helpers/general');
 
 module.exports = positionController = {
     create: async (params) => {
@@ -16,13 +16,13 @@ module.exports = positionController = {
         const positions = await positionModel.find({}, { __v: 0 }, { skip: qParams.offset, limit : qParams.limit });
 
         return Array.from(positions).map(position => {
-            return excractFields(position, qParams.fields);
+            return extractFields(position, qParams.fields);
         })
     },
     findById: async (id, qParams) => {
         qParams = getDefaultQueryParams(qParams);
         const position = await positionModel.findById(id, { __v: 0 }, { skip: qParams.offset, limit : qParams.limit });
-        return excractFields(position, qParams.fields);
+        return extractFields(position, qParams.fields);
     },
     update: async(id, params) => {
         params = { type, description, status } = params;

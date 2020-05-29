@@ -74,7 +74,11 @@ module.exports = {
 	},
 	createFolder: (dir) => {
 		if (!fs.existsSync(dir)) {
-			fs.mkdirSync(dir);
+			try {
+				fs.mkdirSync(dir);
+			} catch (err) {
+				console.log(err);
+            }
 		}
 	},
 	generateLogFile: (app, path, type) => {
@@ -88,7 +92,7 @@ module.exports = {
 			})
 		);
 	},
-	excractFields: (resource, fields) => {
+	extractFields: (resource, fields) => {
 		if (fields.length < 1) return resource;
 		const result = fields.reduce((newResource, field) => {
 			if (field.includes(".")) {
@@ -117,8 +121,8 @@ module.exports = {
 	},
 	sendResponse: (results, confirmation = true) => {
 		if (!confirmation) {
-            return { confirmation: "Fail", statusCode: results.statusCode || 500, message: results.message };
-        }
+			return { confirmation: "Fail", statusCode: results.statusCode || 500, message: results.message };
+		}
 		return { confirmation: "Success", results };
 	},
 	multerUploadImage: multer({

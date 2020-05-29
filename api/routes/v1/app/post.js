@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const auth = require('../../../middlewares/auth');
-const catchException = require('../../../middlewares/catchException');
+const auth = require('../../../middleware/auth');
+const catchException = require('../../../middleware/catchException');
 const controllers = require('../../../controllers/')
 const validations = require('../../../helpers/validations');
 const { sendResponse } = require('../../../helpers/general');

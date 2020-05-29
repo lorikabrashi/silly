@@ -2,7 +2,7 @@ import Vue from "vue";
 import store from "./store";
 import Router from "vue-router";
 
-import Layout from "@/components/Layout/Layout.vue"
+import Layout from "@/components/Layout/Layout"
 
 import Login from "@/pages/Auth/Login";
 import Register from "@/pages/Auth/Register";

@@ -1,6 +1,6 @@
 const categoryModel = require('../models/category')
 const ErrorWithStatusCode = require('../helpers/ErrorWithStatusCode')
-const { excractFields, getDefaultQueryParams, getBoolean } = require('../helpers/general');
+const { extractFields, getDefaultQueryParams, getBoolean } = require('../helpers/general');
 
 module.exports = categoriesController = {
     generateElem: (data, level) => {
@@ -44,7 +44,7 @@ module.exports = categoriesController = {
             categories = list;
         }
         return Array.from(categories).map(category => {
-            return excractFields(category, qParams.fields);
+            return extractFields(category, qParams.fields);
         })
     },
     create: async (params) => {
@@ -60,13 +60,13 @@ module.exports = categoriesController = {
         const categories = await categoryModel.find({}, { __v: 0 }, { skip: qParams.offset, limit : qParams.limit });
 
         return Array.from(categories).map(category => {
-            return excractFields(category, qParams.fields);
+            return extractFields(category, qParams.fields);
         })
     },
     findById: async (id, qParams) => {
         qParams = getDefaultQueryParams(qParams);
         const category = await categoryModel.findById(id, { __v: 0 }, { skip: qParams.offset, limit : qParams.limit });
-        return excractFields(category, qParams.fields);
+        return extractFields(category, qParams.fields);
     },
     update: async(id, params) => {
         

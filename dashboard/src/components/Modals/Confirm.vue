@@ -8,7 +8,7 @@
 			</b-row>
 		</b-container>
 		<template v-slot:modal-footer>
-			<b-button variant="primary" @click="$refs.confirmModal.hide()">Cancel</b-button>
+			<b-button variant="info" @click="$refs.confirmModal.hide()">Cancel</b-button>
 			<b-button variant="danger" @click="confirm">Confirm</b-button>
 		</template>
 	</b-modal>

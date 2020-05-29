@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const catchException = require('../../../middlewares/catchException');
+const catchException = require('../../../middleware/catchException');
 const controllers = require('../../../controllers/')
 const { sendResponse } = require('../../../helpers/general');
 
