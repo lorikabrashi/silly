@@ -70,7 +70,7 @@
 							<div role="group" class="form-row form-group" horizontal="" breakpoint="md">
 								<label for="phone_number" class="col-4 col-form-label text-md-right">Phone Number</label>
 								<div class="col">
-									<input v-model="user.profile.phone_number"  @input="softValidatePhone" class="col form-control" ref="phone_number" type="tel" name="phone_number" />
+									<input v-model="user.profile.phone_number" @input="softValidatePhone" class="col form-control" ref="phone_number" type="tel" name="phone_number" />
 								</div>
 							</div>
 
@@ -94,7 +94,9 @@
 				</b-col>
 
 				<b-col xs="12" lg="12">
-					<pre>{{ user }}</pre>
+                <pre class="codeSnippet">
+                    {{ JSON.stringify(user, null, '\t') }}
+                </pre>
 				</b-col>
 			</b-row>
 		</b-container>
@@ -118,11 +120,11 @@ export default {
 		ProjectDetailsModal,
 		Avatar,
 	},
-    props: ["userId"],
+	props: ["userId"],
 	computed: {
 		loggedInId() {
 			return this.$store.state.auth.user._id;
-        },
+		},
 	},
 	data() {
 		return {
@@ -137,16 +139,16 @@ export default {
 				filterable: false,
 			},
 		};
-    },
+	},
 	async created() {
 		await this.getUserData();
 		this.setInviteDetails();
 	},
 
 	methods: {
-        myTest(){
-            alert('ok')
-        },
+		myTest() {
+			alert("ok");
+		},
 		isCurrentUser() {
 			return this.loggedInId === this.user._id;
 		},
@@ -159,7 +161,7 @@ export default {
 				data: formData,
 			};
 			const response = await this.getData(this.ENDPOINTS.updateAvatar, options);
-			if(response) this.$toasted.success("Avatar updated!");
+			if (response) this.$toasted.success("Avatar updated!");
 		},
 		async updateUser() {
 			const validUser = Validations.validateEditUser(this.user);
@@ -179,7 +181,7 @@ export default {
 				options.data.username = this.user.username;
 			}
 			const response = await this.getData(this.ENDPOINTS.updateUser, options);
-			if(response) this.$toasted.success("User updated!");
+			if (response) this.$toasted.success("User updated!");
 		},
 		toggleModal() {
 			return (this.pwdModal = !this.pwdModal);
@@ -190,7 +192,7 @@ export default {
 				data: { password },
 			};
 			const response = await this.getData(this.ENDPOINTS.updatePassword, options);
-			if(response) this.$toasted.success("Password Changed!");
+			if (response) this.$toasted.success("Password Changed!");
 		},
 		getDefaultModel() {
 			return {
@@ -203,7 +205,7 @@ export default {
 				params: [this.userId],
 			};
 			const user = await this.getData(this.ENDPOINTS.getUser, options);
-			if(user){
+			if (user) {
 				if (!user.hasOwnProperty("profile")) user.profile = {};
 				if (!("avatar" in user.profile)) {
 					user.profile.avatar = require("../../assets/avatars/avatar1.jpg");
@@ -234,10 +236,10 @@ export default {
 		},
 		closeProjectDetails() {
 			this.projectModal = false;
-        },
-        softValidatePhone(){
-            console.log(this.user.profile.phone_number)
-        }
+		},
+		softValidatePhone() {
+			console.log(this.user.profile.phone_number);
+		},
 	},
 };
 </script>

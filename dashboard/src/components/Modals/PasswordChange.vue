@@ -46,8 +46,8 @@ export default {
 	},
 	props: ["modalState"],
 	watch: {
-		modalState: function(newState) {
-			this.state = newState;
+		modalState: function(newVal) {
+			this.state = newVal;
 		},
 	},
 	methods: {

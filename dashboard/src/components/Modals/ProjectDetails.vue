@@ -8,8 +8,8 @@
 		</p>
 
 		<b-table stacked :items="items"></b-table>
-		<pre>
-            {{ projectData }}
+		<pre class="codeSnippet">
+            {{ JSON.stringify(projectData, 2)  }}
         </pre
 		>
 		<template v-slot:modal-footer>
@@ -36,12 +36,12 @@ export default {
 		projectId: String,
 	},
 	watch: {
-		modalState: function(newValue) {
-			this.state = newValue;
+		modalState: function(newVal) {
+			this.state = newVal;
 		},
-		projectId: function(newValue) {
-			this.id = newValue;
-			this.projectUrl = `/project?id=${newValue}`;
+		projectId: function(newVal) {
+			this.id = newVal;
+			this.projectUrl = `/project?id=${newVal}`;
 			this.getProjectData();
 		},
 	},

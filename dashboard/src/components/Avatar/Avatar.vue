@@ -22,8 +22,8 @@ export default {
 		avatar: String
 	},
 	watch: {
-		avatar: function(newValue){
-			this.imgUrl = newValue
+		avatar: function(newVal){
+			this.imgUrl = newVal
 		}
 	},
     methods: {

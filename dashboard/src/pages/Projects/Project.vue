@@ -19,7 +19,7 @@
 				<!-- TODO RAPORTS -->
 			</b-tab>
 		</b-tabs>
-		<pre>
+		<pre class="codeSnippet">
             {{ project }}
         </pre
 		>

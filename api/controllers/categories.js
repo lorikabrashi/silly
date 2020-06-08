@@ -12,7 +12,6 @@ module.exports = categoriesController = {
         newElem.name = `${lines}${newElem.name}`;
         newElem.level = level
         delete newElem.children
-        delete newElem.parent
         return newElem;
     },
     orderCategories: (data, list, level) => {

@@ -55,8 +55,8 @@ export default {
         projectId: String
     },
     watch: {
-        categories: function(value){
-            this.catTable.data = value
+        categories: function(newVal){
+            this.catTable.data = newVal
         }
     },
     methods: {

@@ -1,7 +1,7 @@
 <template>
 	<b-container>
 		<ConfirmModal :obj="modalData" :modalState="confirmState" :modalMessage="confirmMessage" @reject="cancelDelete" @accept="deleteCategory" />
-		<CategoryChange @closed="toggleModal" @save="changeCategory" :modalState="categoryModal" />
+		<CategoryChange :categoryObj="modalData" :categoryList="categoryList" :modalState="categoryModal"  @closed="closeChangeModal" @save="changeCategory" />
 		<b-row>
 			<b-col xs="12" lg="4">
 				<Widget>
@@ -39,9 +39,9 @@
 							</div>
 						</template>
 						<template slot="actions" slot-scope="props">
-							<i class="edit-icon fa fa-edit" @click="toggleModal()"></i>
+							<i class="edit-icon fa fa-edit" @click="triggerChangeModal(props.row)"></i>
 
-							<i class="delete-icon fa fa-trash" @click="triggerModal(props.row._id, props.row.name)"> </i>
+							<i class="delete-icon fa fa-trash" @click="triggerDeleteModal(props.row._id, props.row.name)"> </i>
 						</template>
 					</v-client-table>
 				</Widget>
@@ -91,7 +91,8 @@ export default {
 		};
 	},
 	async created() {
-		await this.getCategories();
+        await this.getCategories();
+        console.log(window);
 	},
 	methods: {
 		setDefaultForm() {
@@ -104,14 +105,19 @@ export default {
 		setDefaultList() {
 			return [{ value: null, text: "Please select an option" }];
 		},
-		triggerModal(id, name) {
+		triggerDeleteModal(id, name) {
 			this.modalData.id = id;
 			this.confirmMessage = `Are your sure that you want to delete: ${name}`;
 			this.confirmState = true;
 		},
-		toggleModal() {
-			this.categoryModal = !this.categoryModal;
-		},
+		triggerChangeModal(category) {
+            this.modalData = category
+            this.categoryModal = true
+        },
+        closeChangeModal(modal) {
+            this.categoryModal = false
+            this.modalData = {};
+        },
 		cancelDelete() {
 			this.confirmState = false;
 			this.modalData = {};
@@ -126,7 +132,11 @@ export default {
 				await this.getCategories();
 				this.$toasted.success("Category Deleted");
 			}
-		},
+        },
+        async changeCategory(category){
+            alert(JSON.stringify(category))
+            
+        },
 		async getCategories() {
 			const options = {
 				params: [true],
@@ -134,7 +144,7 @@ export default {
 			const result = await this.getData(this.ENDPOINTS.getCategories, options);
 			if (result) {
 				this.setParentList(result);
-				this.categories = result;
+                this.categories = result;
 			}
 		},
 		async createCategory() {

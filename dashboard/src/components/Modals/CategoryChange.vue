@@ -1,13 +1,25 @@
 <template>
-	<b-modal ref="categoryModal" @hide="close" title="Change Category" v-model="state" body-bg-variant="white">
+	<b-modal ref="categoryModal" @hide="close" title="Update Category" v-model="state" body-bg-variant="white">
 		<b-container>
 			<b-row>
+                <pre class="codeSnippet">
+                    {{category}}
+                </pre>
 				<b-col xs="12" lg="12">
 					<Widget class="categoryWidget">
 						<form>
-							<b-alert class="alert-sm" variant="danger" :show="!!errMessage">
-								{{ errMessage }}
-							</b-alert>
+                            <div class="col">
+                                <label for="name" class="col-4 col-form-label pl-0">Name</label>
+                                <input v-model="category.name" class="col form-control" ref="name" type="text" name="name" />
+                            </div>
+                            <div class="col">
+                                <label for="description" class="col-4 col-form-label pl-0">Description</label>
+                                <b-textarea v-model="category.description" class="col form-control" ref="description" name="description" />
+                            </div>
+                            <div class="col">
+                                <label for="parent" class="col-4 col-form-label pl-0">Parent</label>
+                                <b-select v-model="category.parent" :options="filtredCategories" name="parent" />
+                            </div>
 						</form>
 					</Widget>
 				</b-col>
@@ -16,7 +28,6 @@
         <template v-slot:modal-footer>
 			<b-button variant="info" @click="$refs.categoryModal.hide()">Cancel</b-button>
 			<b-button variant="success" @click="save">Save changes</b-button>
-
 		</template>
 	</b-modal>
 </template>
@@ -24,27 +35,45 @@
 <script>
 export default {
     name: "CategoryModal",
-    props: ["modalState"],
+    props: {
+       modalState: Boolean,
+       categoryObj: Object,
+       categoryList: Array
+    },
     watch: {
-		modalState: function(newState) {
-            this.state = newState;
-		},
+		modalState: function(newVal) {
+            this.state = newVal;
+        },
+        categoryObj: function(newVal){
+            this.category = newVal
+            this.filterList()
+        },
+        categoryList: {
+            immediate: true,
+            deep: true,
+            handler(newVal){
+                this.categories = newVal
+            } 
+        }
 	},
     data(){
         return{
             state: false,
-			errMessage: "",
+            category: {},
+            categories: [],
+            filtredCategories: []
         }
     },
     methods: {
+        filterList(){
+            this.filtredCategories = this.categories.filter( el => el.text !== this.category.name ); 
+        },
         close() {
 			this.state = false;
-			this.errMessage = "";
-			this.$emit("closed", false);
+            this.$emit("closed");
 		},
 		save() {
-            this.errMessage = ''
-			this.$emit("save", '');
+            this.$emit("save", this.category);
             this.$refs.categoryModal.hide();
 		},
     }

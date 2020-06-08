@@ -3,9 +3,9 @@
 		<ConfirmModal :obj="modalData" :modalState="confirmState" :modalMessage="confirmMessage" @reject="cancelDelete" @accept="deleteProject" />
 
 		<h1 class="page-title">Projects</h1>
-		<!-- <pre>
+		 <pre class="codeSnippet">
             {{projectsData}}    
-        </pre> -->
+        </pre>
 		<b-tabs>
 			<b-tab v-for="(item, key, index) in projects" :key="index" :title="key.charAt(0).toUpperCase() + key.slice(1)" :active="index === 0">
 				<v-client-table class="silly__default-table" :data="item" :columns="columns" :options="options">

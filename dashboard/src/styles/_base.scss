@@ -270,3 +270,8 @@ table > thead > tr > th {
     margin-right: -$widget-padding-horizontal;
   }
 }
+
+.codeSnippet{
+    white-space: pre;
+    line-height: 1.5rem
+}

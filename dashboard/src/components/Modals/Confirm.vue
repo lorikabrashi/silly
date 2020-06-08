@@ -29,11 +29,11 @@ export default {
         obj: Object
     },
 	watch: { 
-		modalState: function(newState){
-			this.state = newState
+		modalState: function(newVal){
+			this.state = newVal
         },
-        modalMessage: function(newMessage){
-            this.message = newMessage
+        modalMessage: function(newVal){
+            this.message = newVal
         }
     },
     methods: {
