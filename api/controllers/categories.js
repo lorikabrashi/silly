@@ -11,7 +11,6 @@ module.exports = categoriesController = {
         const newElem = Object.assign({}, data._doc);
         newElem.name = `${lines}${newElem.name}`;
         newElem.level = level
-        delete newElem.children
         return newElem;
     },
     orderCategories: (data, list, level) => {
@@ -68,15 +67,22 @@ module.exports = categoriesController = {
         return extractFields(category, qParams.fields);
     },
     update: async(id, params) => {
-        
         params = { name, description, parent } = params;
-        
         const category = await categoryModel.findById(id).exec();
-
-        if(parent && parent !== category.parent){
-            
-            await categoryModel.update({ _id: category.parent }, { $pull: { children: { $in: [category._id] } } }).exec();
-            await categoryModel.update({ _id: parent }, { $push: { children: [category._id] } }).exec();
+        if(parent != category.parent){
+            if(!parent){
+                // change from child to parent
+                await categoryModel.update({ _id: category.parent }, { $pull: { children: { $in: [category._id] } } }).exec();
+            }
+            else if(!category.parent){
+                // changed from parent to child
+                await categoryModel.update({ _id: parent }, { $push: { children: [category._id] } }).exec();
+            }
+            else{
+                // changed parents
+                await categoryModel.update({ _id: category.parent }, { $pull: { children: { $in: [category._id] } } }).exec();
+                await categoryModel.update({ _id: parent }, { $push: { children: [category._id] } }).exec();
+            }
         }
         return await categoryModel.findByIdAndUpdate(id, params, { new: true }).select('-__v').exec(); 
     },

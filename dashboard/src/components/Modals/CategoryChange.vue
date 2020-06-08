@@ -66,6 +66,9 @@ export default {
     },
     methods: {
         filterList(){
+            
+            console.log(this.categories)
+
             this.filtredCategories = this.categories.filter( el => el.text !== this.category.name ); 
         },
         close() {

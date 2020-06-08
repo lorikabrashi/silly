@@ -134,8 +134,19 @@ export default {
 			}
         },
         async changeCategory(category){
-            alert(JSON.stringify(category))
-            
+            const options = {
+                params: [category._id],
+                data: {
+                    name: category.name.slice(/[a-z]/i.exec(category.name).index, category.name.length),
+                    description: category.description,
+                    parent: category.parent
+                }
+            }
+            const result = await this.getData(this.ENDPOINTS.updateCategory, options);
+            if (result) {
+				await this.getCategories();
+				this.$toasted.success("Category Updated");
+			}
         },
 		async getCategories() {
 			const options = {
@@ -163,7 +174,8 @@ export default {
 			categories.forEach((elem) => {
 				categoryList.push({
 					value: elem._id,
-					text: elem.name,
+                    text: elem.name,
+                    children: elem.children
 				});
 			});
 			this.categoryList = [...this.setDefaultList(), ...categoryList];

@@ -20,8 +20,8 @@ export const ENDPOINTS = Object.freeze({
 	/* Categories */
 	getCategories: { url: "get-categories", method: "GET" },
 	createCategory: { url: "categories", method: "POST" },
-	deleteCategory: { url: 'categories', method:"DELETE"},
-
+    deleteCategory: { url: 'categories', method:"DELETE"},
+    updateCategory: { url: 'categories', method:"PUT"},
 
 	/* User Endpoints */
 	getAdmins: { url: "get-admins", method: "GET" },
