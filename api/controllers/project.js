@@ -14,16 +14,15 @@ module.exports = projectController = {
         return updatedProject
     },
     removeCategories: async (projectId, catIds) => {
-		/* TODO: TEST */
-		const updatedProject = await projectModel.update({ _id: projectId }, { $pull: { categories: { $in: catIds } } }).exec();
-        return updatedProject
+        const updatedProject = await projectModel.update({ _id: projectId }, { $pull: { categories: { $in: catIds } } }).exec();
+        return updatedProject    
     },
 	invitationResponse: async (params, userId) => {
 		const { projectId, response, reason } = params;
 
 		const project = await projectModel.findOne({ _id: projectId }).exec();
 		if (!project) {
-			throw new ErrorWithStatusCode("Incorect project ID", 400);
+			throw new ErrorWithStatusCode("Incorrect project ID", 400);
 		}
 		const peerInvitation = project.peers.filter((e) => {
 			return e.user._id == userId;
@@ -55,7 +54,7 @@ module.exports = projectController = {
 
 		const project = await projectModel.findOne({ _id: projectId }).exec();
 		if (!project) {
-			throw new ErrorWithStatusCode("Incorect project ID", 400);
+			throw new ErrorWithStatusCode("Incorrect project ID", 400);
 		}
 
 		// check if userId is the project owner or has the permissions to send invitation about project
@@ -128,9 +127,9 @@ module.exports = projectController = {
 
 		/* Get default permissions and add them to the project */
 		const permissions = await permissionsModel.find({ "config.type": "Default" });
-		const deafultPermissions = [];
-		permissions.forEach((e) => deafultPermissions.push(e._id));
-		params.permissions = deafultPermissions;
+		const defaultPermissions = [];
+		permissions.forEach((e) => defaultPermissions.push(e._id));
+		params.permissions = defaultPermissions;
 
 		/* Create self as peer with administrator permissions */
 		const adminRole = permissions.find((e) => e.name === "Administrator");
@@ -140,7 +139,7 @@ module.exports = projectController = {
 				status: "accepted",
 				user: created_from,
 				permissions: adminRole._id,
-				title: "Ideator",
+				title: "Creator",
 				description: "Project Creator",
 				responseText: "Auto Accepted",
 			},

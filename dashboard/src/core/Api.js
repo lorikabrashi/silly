@@ -15,7 +15,8 @@ export const ENDPOINTS = Object.freeze({
 	/* Project Endpoints */
 	getProjects: { url: "projects", method: "GET" },
 	deleteProject: { url: "projects", method: "DELETE" },
-	removeCategory: { url: 'remove-category', method: "POST" },
+    removeCategory: { url: 'remove-category', method: "POST" },
+    addCategory: {url: 'add-category', method: "POST"},
 
 	/* Categories */
 	getCategories: { url: "get-categories", method: "GET" },

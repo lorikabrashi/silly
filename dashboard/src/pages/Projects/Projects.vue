@@ -1,11 +1,6 @@
 <template>
 	<div class="projects-page">
 		<ConfirmModal :obj="modalData" :modalState="confirmState" :modalMessage="confirmMessage" @reject="cancelDelete" @accept="deleteProject" />
-
-		<h1 class="page-title">Projects</h1>
-		 <pre class="codeSnippet">
-            {{projectsData}}    
-        </pre>
 		<b-tabs>
 			<b-tab v-for="(item, key, index) in projects" :key="index" :title="key.charAt(0).toUpperCase() + key.slice(1)" :active="index === 0">
 				<v-client-table class="silly__default-table" :data="item" :columns="columns" :options="options">
@@ -18,6 +13,10 @@
 				</v-client-table>
 			</b-tab>
 		</b-tabs>
+
+        <pre class="codeSnippet">
+            {{projectsData}}    
+        </pre>
 	</div>
 </template>
 <script>
@@ -57,10 +56,8 @@ export default {
 						return new Date(row.createdAt).toLocaleString();
 					},
 					project_creators(h, row) {
-						// "created_from" field in db
-						const creators_obj = row.peers.filter((e) => e.title === "Ideator");
-						return creators_obj.map((e) => e.user).toString();
-					},
+                        return row.created_from.username
+                    },
 					categories(h, row) {
 						let categores = row.categories.map((e) => e.name);
 						return categores.toString();
@@ -86,6 +83,9 @@ export default {
 				},
 			},
 		};
+    },
+    async created() {
+		this.getTableData();
 	},
 	methods: {
 		triggerModal(id, name) {
@@ -110,15 +110,14 @@ export default {
 		async getTableData() {
 			const options = {
 				query: {
-					//add project_creator
-					fields: "_id,stage,name,peers,categories,license,positions,qa,createdAt",
+					fields: "_id,stage,name,peers,categories,license,positions,qa,created_from,createdAt",
 				},
 			};
 			const projects = await this.getData(this.ENDPOINTS.getProjects, options);
-			if (projects) this.items = this.formatData(projects);
+			if (projects) this.formatData(projects);
 		},
 		formatData(projects) {
-			this.projectsData = projects;
+            this.projectsData = projects;
 
 			const projectsObj = {
 				initiation: projects.filter((e) => e.stage === "initiation"),
@@ -129,9 +128,6 @@ export default {
 
 			this.projects = projectsObj;
 		},
-	},
-	async created() {
-		this.getTableData();
 	},
 };
 </script>

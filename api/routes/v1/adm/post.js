@@ -9,7 +9,7 @@ const validations = require("../../../helpers/validations");
 
 //Project
 router.post(
-	"/remove-category",
+	"/add-category",
 	catchException(auth.adm.validateAccessToken),
 	validations.addRemoveCategories,
 	catchException(async (req, res) => {

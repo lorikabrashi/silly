@@ -6,7 +6,7 @@
 				<b-table stacked :items="details"></b-table>
 			</b-tab>
 			<b-tab title="Categories" active>
-				<ProjectCategories :projectId="projectId" :categories="categories" @changed="refreshData"/>
+				<ProjectCategories :projectId="projectId" :categories="categories" @removeCategories="removeCategories"/>
 			</b-tab>
 
 			<b-tab title="Peers"> </b-tab>
@@ -49,8 +49,15 @@ export default {
 		await this.getProjectData();
 	},
 	methods: {
-		async refreshData(){
-			await this.getProjectData();
+		async removeCategories(options, message){
+			const result = await this.getData(this.ENDPOINTS.removeCategory, options);
+            if(result){
+                this.$toasted.success(message);
+                await this.getProjectData();
+            }
+		},
+		async addCategory(options){
+
 		},
 		async getProjectData() {
 			const options = {

@@ -1,9 +1,11 @@
 <template>
     <div class="Silly__project-categories">
         <ConfirmModal :obj="modalData" :modalState="confirmState" :modalMessage="confirmMessage" @reject="cancelDelete" @accept="removeCategories" />
-        
+        <AddCategoryModal :modalState="addCategoryModalState" @closed="toggleAddCategoryModal" @addCategory="addCategory"/>
+
+
         <div class="text-md-right mt-sm silly__categories-buttons">
-            <b-button variant="success" @click="addCategoriesModal">Add new</b-button>
+            <b-button variant="success" @click="toggleAddCategoryModal">Add new</b-button>
             <b-button variant="danger" @click="removeCategoriesModal">Remove</b-button>
         </div>
         <v-client-table class="silly__default-table has_checkbox" :data="catTable.data" :columns="catTable.columns" :options="catTable.options">
@@ -21,17 +23,18 @@
     </div>
 </template>
 <script>
-import api from "@/mixins/api";
 import ConfirmModal from "@/components/Modals/Confirm";
+import AddCategoryModal from "@/components/Modals/AddCategory";
 export default {
     name: "ProjectCategories",
-    mixins: [api],
     components: {
-        ConfirmModal
+        ConfirmModal,
+        AddCategoryModal
     },
     data(){
         return {
             confirmState: false,
+            addCategoryModalState: false,
 			confirmMessage: '',
             modalData: {},
             addCategoriesState: false,
@@ -60,13 +63,11 @@ export default {
         }
     },
     methods: {
-        addCategoriesModal() {
-            return ''
-        },
 		async removeCategories(data){
             const options = {
                 data: { projectId: this.projectId }
             };
+            
             let message = ''
             if('ids' in data){
                 options.data.catIds = data.ids;
@@ -76,11 +77,8 @@ export default {
                 options.data.catIds = [data.id];
                 message = `Category Deleted`
             }
-            const result = await this.getData(this.ENDPOINTS.removeCategory, options);
-            if(result){
-                this.$toasted.success(message);
-                this.$emit('changed');
-            }
+
+            this.$emit('removeCategories', options, message);
         },
         cancelDelete(){
 			this.confirmState = false;
@@ -96,6 +94,14 @@ export default {
 			const ids = this.catTable.data.filter(e => e.selected === true).map(e => e._id)
 			this.modalData.ids = ids;
 			this.confirmState = true;
+        },
+        toggleAddCategoryModal() {            
+            this.addCategoryModalState = !this.addCategoryModalState;
+        },
+        addCategory(data){
+            this.addCategoryModalState = false
+            
+            // TODO emit to add category
         },
         categoriesSelectAll(value) {
             this.catTable.data.forEach(elem => { 
