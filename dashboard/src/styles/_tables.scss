@@ -1,16 +1,19 @@
 .silly__default-table {
 	& .VueTables__child-row-toggler--closed::before {
 		font-family: "FontAwesome";
-		content: '\f054';
-	}  
+		//content: '\f054';
+        content: '\f067';
+    }  
 	& .VueTables__child-row-toggler--open::before {
 		font-family: "FontAwesome";
-		content: '\f078';
+        //content: '\f078';
+        content: '\f068';
 	}
 	& .VueTables__child-row-toggler{
+        cursor: pointer;
 		display: flex;
 		align-items: center;
-		justify-content: center;
+        justify-content: center;
 	}
 
 	&.has_checkbox {

@@ -2,9 +2,6 @@
 	<b-modal ref="categoryModal" @hide="close" title="Update Category" v-model="state" body-bg-variant="white">
 		<b-container>
 			<b-row>
-                <pre class="codeSnippet">
-                    {{category}}
-                </pre>
 				<b-col xs="12" lg="12">
 					<Widget class="categoryWidget">
 						<form>
@@ -66,10 +63,22 @@ export default {
     },
     methods: {
         filterList(){
-            
-            console.log(this.categories)
-
-            this.filtredCategories = this.categories.filter( el => el.text !== this.category.name ); 
+            const removeChildren = (obj, excludeCategories) => {
+                if(obj.children && obj.children.length){
+                    obj.children.forEach(elem => {
+                        excludeCategories.push(elem._id);
+                        removeChildren(elem, excludeCategories);
+                    })
+                }
+            };
+            const excludeCategories = [];
+            this.categories.forEach(elem => {
+                if(elem.value == this.category._id){
+                    excludeCategories.push(elem.value);
+                    removeChildren(elem, excludeCategories)
+                }
+            })
+            this.filtredCategories = this.categories.filter( el => !excludeCategories.includes(el.value) ); 
         },
         close() {
 			this.state = false;

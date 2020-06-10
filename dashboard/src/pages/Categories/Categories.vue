@@ -92,7 +92,6 @@ export default {
 	},
 	async created() {
         await this.getCategories();
-        console.log(window);
 	},
 	methods: {
 		setDefaultForm() {
@@ -103,7 +102,7 @@ export default {
 			};
 		},
 		setDefaultList() {
-			return [{ value: null, text: "Please select an option" }];
+			return [{ value: null, text: "None" }];
 		},
 		triggerDeleteModal(id, name) {
 			this.modalData.id = id;
