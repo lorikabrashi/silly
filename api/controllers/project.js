@@ -15,7 +15,7 @@ module.exports = projectController = {
     },
     removeCategories: async (projectId, catIds) => {
         const updatedProject = await projectModel.update({ _id: projectId }, { $pull: { categories: { $in: catIds } } }).exec();
-        return updatedProject    
+        return updatedProject
     },
 	invitationResponse: async (params, userId) => {
 		const { projectId, response, reason } = params;

@@ -32,6 +32,14 @@
 <script>
 export default {
     name: "CategoryModal",
+    data(){
+        return{
+            state: false,
+            category: {},
+            categories: [],
+            filtredCategories: []
+        }
+    },
     props: {
        modalState: Boolean,
        categoryObj: Object,
@@ -53,14 +61,6 @@ export default {
             } 
         }
 	},
-    data(){
-        return{
-            state: false,
-            category: {},
-            categories: [],
-            filtredCategories: []
-        }
-    },
     methods: {
         filterList(){
             const removeChildren = (obj, excludeCategories) => {

@@ -3,15 +3,23 @@
 		<b-container>
 			<b-row>
 				<b-col xs="12" lg="12">
+					<pre class="codeSnippet">
+                        {{ categories }}
+                    </pre>
 					<Widget class="categoryWidget">
 						<form>
-
-                        </form>
+							<div class="col form-group  abc-checkbox abc-checkbox-primary">
+								<div class="group" v-for="item in categories" :key="item._id">
+									<input v-model="item.onProject" :value="item._id" type="checkbox" :id="item._id" />
+									<label :for="item._id">{{ item.name }}</label>
+								</div>
+							</div>
+						</form>
 					</Widget>
 				</b-col>
 			</b-row>
 		</b-container>
-         <template v-slot:modal-footer>
+		<template v-slot:modal-footer>
 			<b-button variant="info" @click="$refs.addCategoryModal.hide()">Cancel</b-button>
 			<b-button variant="success" @click="addCategory">Add Category</b-button>
 		</template>
@@ -23,26 +31,32 @@ export default {
 	name: "AddCategory",
 	data() {
 		return {
-            state: false,
-        };
+			state: false,
+			categories: [],
+		};
 	},
 	props: {
-        modalState: Boolean
-    },
+		modalState: Boolean,
+		projectCategories: Array,
+		categoryList: Array
+	},
 	watch: {
-        modalState: function(newVal) {
-            this.state = newVal;
-        },
-    },
+		modalState: function(newVal) {
+			this.state = newVal;
+		},
+		categoryList: function(newVal) {
+			this.categories = newVal;
+		},
+	},
 	methods: {
-        close() {
-            this.state = false;
-            this.$emit("closed");
-        },
-        addCategory(){
-            this.$emit("addCategory");
-            this.$refs.categoryModal.hide();
-        },
+		close() {
+			this.state = false;
+			this.$emit("closed");
+		},
+		addCategory() {
+			this.$emit("addCategory");
+			this.$refs.categoryModal.hide();
+		},
 	},
 };
 </script>

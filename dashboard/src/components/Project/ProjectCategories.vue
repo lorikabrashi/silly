@@ -1,7 +1,7 @@
 <template>
     <div class="Silly__project-categories">
         <ConfirmModal :obj="modalData" :modalState="confirmState" :modalMessage="confirmMessage" @reject="cancelDelete" @accept="removeCategories" />
-        <AddCategoryModal :modalState="addCategoryModalState" @closed="toggleAddCategoryModal" @addCategory="addCategory"/>
+        <AddCategoryModal :modalState="addCategoryModalState" :categoryList="categoryList" @closed="toggleAddCategoryModal" @addCategory="addCategory"/>
 
 
         <div class="text-md-right mt-sm silly__categories-buttons">
@@ -38,7 +38,7 @@ export default {
 			confirmMessage: '',
             modalData: {},
             addCategoriesState: false,
-
+            categoryList: [],
             catTable: {
                 allSelected: false,
 				data: [],
@@ -54,12 +54,16 @@ export default {
         }
     },
     props: {
-        categories: Array,
-        projectId: String
+        projectCategories: Array,
+        projectId: String,
+        categories: Array
     },
     watch: {
+        projectCategories: function(newVal){
+            this.catTable.data = newVal;
+        },
         categories: function(newVal){
-            this.catTable.data = newVal
+            this.categoryList = newVal;
         }
     },
     methods: {

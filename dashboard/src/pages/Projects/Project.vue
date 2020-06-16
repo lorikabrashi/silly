@@ -6,7 +6,7 @@
 				<b-table stacked :items="details"></b-table>
 			</b-tab>
 			<b-tab title="Categories" active>
-				<ProjectCategories :projectId="projectId" :categories="categories" @removeCategories="removeCategories"/>
+				<ProjectCategories :projectId="projectId" :categories="categories" :projectCategories="projectCategories" @removeCategories="removeCategories"/>
 			</b-tab>
 
 			<b-tab title="Peers"> </b-tab>
@@ -37,16 +37,18 @@ export default {
 		ErrorPage,
 		ProjectCategories
 	},
-	props: ["projectId"],
 	data() {
-		return {
-			project: {}, //debugging
+        return {
+            project: {}, //debugging
 			details: [],
-			categories: [],
+            projectCategories: [],
+            categories: [],
 		};
 	},
+	props: ["projectId"],
 	async created() {
-		await this.getProjectData();
+        await this.getProjectData();
+        await this.getCategories();
 	},
 	methods: {
 		async removeCategories(options, message){
@@ -58,7 +60,22 @@ export default {
 		},
 		async addCategory(options){
 
-		},
+        },
+        async getCategories() {
+            const options = {
+                params: [true],
+                query: {
+					fields: "_id,name,description",
+				},
+            };
+            const result = await this.getData(this.ENDPOINTS.getCategories, options);
+            if (result) {
+                result.forEach(elem => {
+                    elem.onProject = false
+                });
+                this.categories = result;
+			}
+        },
 		async getProjectData() {
 			const options = {
 				params: [this.projectId],
@@ -66,7 +83,7 @@ export default {
 			const project = await this.getData(this.ENDPOINTS.getProjects, options);
 
 			this.setDetails(project);
-			this.setCategories(project);
+			this.setProjectCategories(project);
 			this.setPeers();
 			this.setPermissions();
 			this.setPositions();
@@ -87,7 +104,7 @@ export default {
 				},
 			];
 		},
-		setCategories(project) {
+		setProjectCategories(project) {
 			const categories = [];
 			project.categories.forEach((elem) => {
 				categories.push({
@@ -97,7 +114,7 @@ export default {
 					description: elem.description,
 				});
 			});
-			this.categories = categories;
+			this.projectCategories = categories;
 		},
 
 		setPeers() {},
