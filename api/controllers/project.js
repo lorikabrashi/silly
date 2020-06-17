@@ -9,8 +9,8 @@ const mailConfig = require("../helpers/mailConfig");
 
 module.exports = projectController = {
     addCategories: async(projectId, catIds) => {
-        /* TODO: TEST */
-        const updatedProject = await projectModel.update({ _id: projectId }, { $push: { categories: { $in: catIds } } }).exec();
+       
+        const updatedProject = await projectModel.update({ _id: projectId }, { $push: { categories: catIds } }).exec();
         return updatedProject
     },
     removeCategories: async (projectId, catIds) => {

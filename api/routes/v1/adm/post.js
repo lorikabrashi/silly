@@ -15,7 +15,7 @@ router.post(
 	catchException(async (req, res) => {
 		validations.checkResults(req);
 		const { projectId, catIds } = req.body;
-        const results = await controllers['projects'].addCategories(projectId, catIds);
+		const results = await controllers['projects'].addCategories(projectId, catIds);
         res.json(sendResponse(results));
     })
 );
@@ -37,9 +37,7 @@ router.post(
 	catchException(auth.adm.validateAccessTokenExp),
 	validations.refreshToken,
 	catchException(async (req, res) => {
-
 		validations.checkResults(req);
-
 		const { refreshToken } = req.body;
 		const result = await controllers["auth"].generateNewAccessToken(req.decoded, refreshToken);
 		res.json(sendResponse(result));
@@ -62,7 +60,8 @@ router.post(
 	"/:resource",
 	catchException(auth.adm.validateAccessToken),
 	catchException(async (req, res) => {
-		const resource = req.params.resource;
+
+        const resource = req.params.resource;
 		const controller = controllers[resource];
 
 		if (controller == null || typeof controller.create !== "function") {

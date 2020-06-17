@@ -3,14 +3,11 @@
 		<b-container>
 			<b-row>
 				<b-col xs="12" lg="12">
-					<pre class="codeSnippet">
-                        {{ categories }}
-                    </pre>
 					<Widget class="categoryWidget">
 						<form>
 							<div class="col form-group  abc-checkbox abc-checkbox-primary">
 								<div class="group" v-for="item in categories" :key="item._id">
-									<input v-model="item.onProject" :value="item._id" type="checkbox" :id="item._id" />
+									<input :disabled="item.disabled" v-model="item.onProject" :value="item._id" type="checkbox" :id="item._id" />
 									<label :for="item._id">{{ item.name }}</label>
 								</div>
 							</div>
@@ -54,8 +51,9 @@ export default {
 			this.$emit("closed");
 		},
 		addCategory() {
-			this.$emit("addCategory");
-			this.$refs.categoryModal.hide();
+			const addedCategories = this.categories.filter(elem => !elem.disabled && elem.onProject);
+			this.$emit("addCategories", addedCategories);
+			this.$refs.addCategoryModal.hide();
 		},
 	},
 };

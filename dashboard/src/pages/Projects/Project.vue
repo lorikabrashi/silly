@@ -6,7 +6,7 @@
 				<b-table stacked :items="details"></b-table>
 			</b-tab>
 			<b-tab title="Categories" active>
-				<ProjectCategories :projectId="projectId" :categories="categories" :projectCategories="projectCategories" @removeCategories="removeCategories"/>
+				<ProjectCategories :projectId="projectId" :categories="categories" :projectCategories="projectCategories" @removeCategories="removeCategories" @addCategories="addCategories"/>
 			</b-tab>
 
 			<b-tab title="Peers"> </b-tab>
@@ -47,19 +47,27 @@ export default {
 	},
 	props: ["projectId"],
 	async created() {
-        await this.getProjectData();
-        await this.getCategories();
+		this.setupData();
 	},
 	methods: {
+		async setupData() {
+			await this.getProjectData();
+        	await this.getCategories();
+		},
 		async removeCategories(options, message){
 			const result = await this.getData(this.ENDPOINTS.removeCategory, options);
             if(result){
                 this.$toasted.success(message);
-                await this.getProjectData();
+				
+				this.setupData();
             }
 		},
-		async addCategory(options){
-
+		async addCategories(options, message){
+			const result = await this.getData(this.ENDPOINTS.addCategory, options);
+			if(result){
+                this.$toasted.success(message);
+				this.setupData();
+            }
         },
         async getCategories() {
             const options = {
@@ -71,7 +79,13 @@ export default {
             const result = await this.getData(this.ENDPOINTS.getCategories, options);
             if (result) {
                 result.forEach(elem => {
+                    if(this.project.categories.some(e => e._id === elem._id)){
+                        elem.onProject = true
+                        elem.disabled = true
+                        return
+                    }
                     elem.onProject = false
+                    elem.disabled = false
                 });
                 this.categories = result;
 			}

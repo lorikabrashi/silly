@@ -1,8 +1,7 @@
 <template>
     <div class="Silly__project-categories">
         <ConfirmModal :obj="modalData" :modalState="confirmState" :modalMessage="confirmMessage" @reject="cancelDelete" @accept="removeCategories" />
-        <AddCategoryModal :modalState="addCategoryModalState" :categoryList="categoryList" @closed="toggleAddCategoryModal" @addCategory="addCategory"/>
-
+        <AddCategoryModal :modalState="addCategoryModalState" :categoryList="categoryList" @closed="toggleAddCategoryModal" @addCategories="addCategories"/>
 
         <div class="text-md-right mt-sm silly__categories-buttons">
             <b-button variant="success" @click="toggleAddCategoryModal">Add new</b-button>
@@ -71,7 +70,6 @@ export default {
             const options = {
                 data: { projectId: this.projectId }
             };
-            
             let message = ''
             if('ids' in data){
                 options.data.catIds = data.ids;
@@ -102,10 +100,17 @@ export default {
         toggleAddCategoryModal() {            
             this.addCategoryModalState = !this.addCategoryModalState;
         },
-        addCategory(data){
-            this.addCategoryModalState = false
-            
-            // TODO emit to add category
+        addCategories(data){
+			const options = {
+				data: { projectId: this.projectId }
+			}
+			let message = ''
+			const ids = data.map(elem => elem._id);
+			if(ids.length){
+				options.data.catIds = ids;
+				message = 'New categories added!';
+            	this.$emit('addCategories', options, message);
+			}
         },
         categoriesSelectAll(value) {
             this.catTable.data.forEach(elem => { 
