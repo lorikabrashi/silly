@@ -101,6 +101,7 @@ export default {
             this.addCategoryModalState = !this.addCategoryModalState;
         },
         addCategories(data){
+			
 			const options = {
 				data: { projectId: this.projectId }
 			}

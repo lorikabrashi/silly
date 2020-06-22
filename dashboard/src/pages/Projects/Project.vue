@@ -5,11 +5,13 @@
 			<b-tab title="Details">
 				<b-table stacked :items="details"></b-table>
 			</b-tab>
-			<b-tab title="Categories" active>
-				<ProjectCategories :projectId="projectId" :categories="categories" :projectCategories="projectCategories" @removeCategories="removeCategories" @addCategories="addCategories"/>
+			<b-tab title="Categories">
+				<ProjectCategories :projectId="projectId" :categories="categories" :projectCategories="projectCategories" @removeCategories="removeCategories" @addCategories="addCategories" />
 			</b-tab>
 
-			<b-tab title="Peers"> </b-tab>
+			<b-tab title="Peers" active>
+				<ProjectPeers :projectPeers="peers" />
+			</b-tab>
 
 			<b-tab title="Permissions"> </b-tab>
 
@@ -19,30 +21,32 @@
 				<!-- TODO RAPORTS -->
 			</b-tab>
 		</b-tabs>
-		<pre class="codeSnippet">
+		<!-- <pre class="codeSnippet">
             {{ project }}
-        </pre
-		>
+        </pre> -->
 	</div>
 </template>
 
 <script>
 import ErrorPage from "@/pages/Error/Error";
 import api from "@/mixins/api";
-import ProjectCategories from "@/components/Project/ProjectCategories"
+import ProjectCategories from "@/components/Project/ProjectCategories";
+import ProjectPeers from "@/components/Project/ProjectPeers";
 export default {
 	name: "Project",
 	mixins: [api],
 	components: {
 		ErrorPage,
-		ProjectCategories
+		ProjectCategories,
+		ProjectPeers,
 	},
 	data() {
-        return {
-            project: {}, //debugging
+		return {
+			project: {}, //debugging
 			details: [],
-            projectCategories: [],
-            categories: [],
+			projectCategories: [],
+			categories: [],
+			peers: [],
 		};
 	},
 	props: ["projectId"],
@@ -52,44 +56,44 @@ export default {
 	methods: {
 		async setupData() {
 			await this.getProjectData();
-        	await this.getCategories();
+			await this.getCategories();
 		},
-		async removeCategories(options, message){
+		async removeCategories(options, message) {
 			const result = await this.getData(this.ENDPOINTS.removeCategory, options);
-            if(result){
-                this.$toasted.success(message);
-				
+			if (result) {
+				this.$toasted.success(message);
+
 				this.setupData();
-            }
+			}
 		},
-		async addCategories(options, message){
+		async addCategories(options, message) {
 			const result = await this.getData(this.ENDPOINTS.addCategory, options);
-			if(result){
-                this.$toasted.success(message);
+			if (result) {
+				this.$toasted.success(message);
 				this.setupData();
-            }
-        },
-        async getCategories() {
-            const options = {
-                params: [true],
-                query: {
+			}
+		},
+		async getCategories() {
+			const options = {
+				params: [true],
+				query: {
 					fields: "_id,name,description",
 				},
-            };
-            const result = await this.getData(this.ENDPOINTS.getCategories, options);
-            if (result) {
-                result.forEach(elem => {
-                    if(this.project.categories.some(e => e._id === elem._id)){
-                        elem.onProject = true
-                        elem.disabled = true
-                        return
-                    }
-                    elem.onProject = false
-                    elem.disabled = false
-                });
-                this.categories = result;
+			};
+			const result = await this.getData(this.ENDPOINTS.getCategories, options);
+			if (result) {
+				result.forEach((elem) => {
+					if (this.project.categories.some((e) => e._id === elem._id)) {
+						elem.onProject = true;
+						elem.disabled = true;
+						return;
+					}
+					elem.onProject = false;
+					elem.disabled = false;
+				});
+				this.categories = result;
 			}
-        },
+		},
 		async getProjectData() {
 			const options = {
 				params: [this.projectId],
@@ -98,7 +102,7 @@ export default {
 
 			this.setDetails(project);
 			this.setProjectCategories(project);
-			this.setPeers();
+			this.setPeers(project);
 			this.setPermissions();
 			this.setPositions();
 
@@ -108,7 +112,8 @@ export default {
 			this.project = project;
 		},
 		setDetails(project) {
-			this.details = [ {
+			this.details = [
+				{
 					project_Id: project._id,
 					stage: project.stage,
 					name: project.name,
@@ -131,7 +136,9 @@ export default {
 			this.projectCategories = categories;
 		},
 
-		setPeers() {},
+		setPeers(project) {
+			this.peers = project.peers;
+		},
 		setPermissions() {},
 		setPositions() {},
 		/* TODO */
