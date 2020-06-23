@@ -1,9 +1,22 @@
 <template>
 	<div class="Silly__project-peers">
+		<div class="peers_info">
+			<ul class="user-info_list">
+				<li class="info_item">
+					<span>Peers:</span><strong>{{ peersInfo.accepted }}</strong>
+				</li>
+				<li class="info_item">
+					<span>Rejected:</span><strong>{{ peersInfo.rejected }}</strong>
+				</li>
+				<li class="info_item">
+					<span>Pending:</span><strong>{{ peersInfo.pending }}</strong>
+				</li>
+			</ul>
+		</div>
 		<v-client-table class="silly__default-table" :data="peers" :columns="columns" :options="options">
 			<template slot="username" slot-scope="props">
 				<router-link :to="`${userUrl + props.row.user._id}`">
-					{{props.row.user.username}}
+					{{ props.row.user.username }}
 				</router-link>
 			</template>
 		</v-client-table>
@@ -13,19 +26,17 @@
 <script>
 export default {
 	name: "ProjectPeers",
-	components: {},
 	data() {
 		return {
-			userUrl: '/user?id=',
+			userUrl: "/user?id=",
 			peers: [],
-			columns: ['status', 'username', 'title', 'description'],
+			columns: ["status", "username", "title", "description"],
 			options: {
-				username: ['Status', "Username", 'Title', 'Description'],
-				sortable: ['status', "name", "title"],
+				sortable: ["status", "username", "title"],
 				texts: {
-					filter: "Search:"	
+					filter: "Search:",
 				},
-			}
+			},
 		};
 	},
 	props: {
@@ -36,8 +47,28 @@ export default {
 			this.peers = newVal;
 		},
 	},
-	methods: {},
+	computed: {
+		peersInfo: function() {
+			return {
+				accepted: this.peers.filter((e) => e.status === "accepted").length,
+				rejected: this.peers.filter((e) => e.status === "rejected").length,
+				pending: this.peers.filter((e) => e.status === "pending").length,
+			};
+		},
+	},
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.peers_info {
+	display: flex;
+	justify-content: flex-end;
+	margin-right: 10px;
+}
+.user-info_list {
+	text-align: end;
+}
+.info_item span {
+	margin-right: 10px;
+}
+</style>
