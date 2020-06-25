@@ -9,8 +9,9 @@
 			<ul class="nav">
 				<NavLink :activeItem="activeItem" header="Dashboard" link="/dashboard" iconName="fi flaticon-home" index="dashboard" isHeader />
 				<NavLink :activeItem="activeItem" header="Users" link="/users" iconName="fi flaticon-users" index="users" isHeader />
-				<NavLink :activeItem="activeItem" header="Projects" link="/projects" iconName="fi flaticon-folder-10" index="projects" isHeader />
-				<NavLink :activeItem="activeItem" header="Categories" link="/categories" iconName="fa fa-tags" index="categories" isHeader />
+				<NavLink :activeItem="activeItem" header="Projects" link="/projects" iconName="las la-archive" index="projects" isHeader />
+				<NavLink :activeItem="activeItem" header="Categories" link="/categories" iconName="las la-tags" index="categories" isHeader />
+				<NavLink :activeItem="activeItem" header="Permissions" link="/permissions" iconName="las la-user-lock" index="permissions" isHeader />
 			</ul>
 			<p></p>
 			<h5 class="navTitle">

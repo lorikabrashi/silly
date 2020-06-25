@@ -24,6 +24,7 @@ import ProjectPage from "@/pages/Projects/Project";
 
 //Categories
 import CategoriesPage from "@/pages/Categories/Categories"
+import PermissionsPage from "@/pages/Permissions/Permissions"
 
 Vue.use(Router);
 
@@ -156,6 +157,21 @@ const router = new Router({
 					path: "",
 					name: "CategoriesPage",
 					component: CategoriesPage
+				}
+			]
+		},
+		{
+			path: "/permissions",
+			name: "Layout",
+			component: Layout,
+			meta: {
+				requiresAuth: true
+			},
+			children: [
+				{
+					path: "",
+					name: "PermissionsPage",
+					component: PermissionsPage
 				}
 			]
 		},

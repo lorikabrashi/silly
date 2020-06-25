@@ -39,9 +39,9 @@
 							</div>
 						</template>
 						<template slot="actions" slot-scope="props">
-							<i class="edit-icon fa fa-edit" @click="triggerChangeModal(props.row)"></i>
+							<i class="edit-icon las la-edit" @click="triggerChangeModal(props.row)"></i>
 
-							<i class="delete-icon fa fa-trash" @click="triggerDeleteModal(props.row._id, props.row.name)"> </i>
+							<i class="delete-icon las la-minus-circle" @click="triggerDeleteModal(props.row._id, props.row.name)"> </i>
 						</template>
 					</v-client-table>
 				</Widget>

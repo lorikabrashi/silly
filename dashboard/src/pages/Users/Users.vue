@@ -14,9 +14,9 @@
 				<v-client-table class="silly__default-table" :data="usersData" :columns="columns" :options="options">
 					<template slot="actions" slot-scope="props">
 						<router-link :to="props.row.uri">
-							<i class="edit-icon fa fa-edit"></i>
+							<i class="edit-icon las la-edit"></i>
 						</router-link>
-						<i class="delete-icon fa fa-trash" @click="triggerModal(props.row.id, props.row.username)"> </i>
+						<i class="delete-icon las la-minus-circle" @click="triggerModal(props.row.id, props.row.username)"> </i>
 					</template>
 				</v-client-table>
 			</b-tab>
@@ -24,9 +24,9 @@
 				<v-client-table class="silly__default-table" :data="adminsData" :columns="columns" :options="options">
 					<template slot="actions" slot-scope="props">
 						<router-link :to="props.row.uri">
-							<i class="edit-icon fa fa-edit"></i>
+							<i class="edit-icon las la-edit"></i>
 						</router-link>
-						<i class="delete-icon fa fa-trash" v-if="props.row.id !== loggedInId" @click="triggerModal(props.row.id, props.row.username)"> </i>
+						<i class="delete-icon las la-minus-circle" v-if="props.row.id !== loggedInId" @click="triggerModal(props.row.id, props.row.username)"> </i>
 					</template>
 				</v-client-table>
 			</b-tab>

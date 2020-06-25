@@ -6,9 +6,9 @@
 				<v-client-table class="silly__default-table" :data="item" :columns="columns" :options="options">
 					<template slot="actions" slot-scope="props">
 						<router-link :to="url + props.row._id">
-							<i class="edit-icon fa fa-edit"></i>
+							<i class="edit-icon las la-edit"></i>
 						</router-link>
-						<i class="delete-icon fa fa-trash" @click="triggerModal(props.row._id, props.row.name)"> </i>
+						<i class="delete-icon las la-minus-circle" @click="triggerModal(props.row._id, props.row.name)"> </i>
 					</template>
 				</v-client-table>
 			</b-tab>

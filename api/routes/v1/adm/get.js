@@ -52,6 +52,9 @@ router.get(
 	})
 );
 
+
+
+
 router.get(
 	"/:resource",
 	catchException(auth.adm.validateAccessToken),
