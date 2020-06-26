@@ -39,6 +39,7 @@ module.exports = permissionController = {
         return await permissionModel.findByIdAndUpdate(id, params, { new: true }).select('-__v').exec(); 
     },
     delete: async(id) => {
+		/* TODO: deleted => update projects/project (default/custom) */
         const permissions = await permissionModel.findByIdAndRemove(id).exec();
         return `Deleted permission - ${permissions._id}`
     }

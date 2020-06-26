@@ -6,7 +6,7 @@
 				<Widget>
 					<form @submit.prevent="createPermission">
 						<legend>
-							<span><strong>Create </strong> Permission</span>
+							<span> <strong>Create</strong> Permission </span>
 						</legend>
 						<div class="col">
 							<label for="name" class="col-4 col-form-label pl-0">Name</label>
@@ -15,6 +15,15 @@
 						<div class="col">
 							<label for="description" class="col-4 col-form-label pl-0">Description</label>
 							<b-textarea v-model="permissionForm.description" class="col form-control" ref="description" name="description" />
+						</div>
+						<div class="col">
+							<label for="description" class="col-4 col-form-label pl-0">Permissions</label>
+							<div class="group abc-checkbox abc-checkbox-primary" v-for="(value, name) in permissionForm.permissions" :key="name">
+								<input v-model="permissionForm.permissions[name]" :value="value" type="checkbox" :id="name" />
+								<label :for="name">
+									{{ formatName(name) }}
+								</label>
+							</div>
 						</div>
 						<div class="col text-md-right">
 							<div class="mt-3">
@@ -29,14 +38,24 @@
 					<v-client-table class="silly__default-table" :data="permissions" :columns="tableCoumns" :options="tableOptions">
 						<template slot="child_row" slot-scope="props">
 							<div class="silly__default-table-description">
-								<strong>Description:</strong>
-								{{ props.row.description }}
+								<div class="desc">
+									<strong>Description:</strong>
+									<span>{{ props.row.description }}</span>
+								</div>
+								<div class="permissions">
+									<ul>
+										<li v-for="(value, name) in props.row.permissions" :key="name">
+											<strong> {{ formatName(name) }}: </strong>
+											<span>{{ value.toString().toUpperCase() }}</span>
+										</li>
+									</ul>
+								</div>
 							</div>
 						</template>
 						<template slot="actions" slot-scope="props">
 							<i class="edit-icon las la-edit" @click="triggerChangeModal(props.row)"></i>
 
-							<i class="delete-icon las la-minus-circle" @click="triggerDeleteModal(props.row._id, props.row.name)"> </i>
+							<i class="delete-icon las la-minus-circle" @click="triggerDeleteModal(props.row._id, props.row.name)"></i>
 						</template>
 					</v-client-table>
 				</Widget>
@@ -59,7 +78,9 @@ export default {
 			modalData: {},
 			confirmMessage: "",
 			permissionModal: false,
+			
 			permissionForm: this.setDefaultForm(),
+
 			permissions: [],
 			tableCoumns: ["name", "createdAt", "actions"],
 			tableOptions: {
@@ -83,11 +104,23 @@ export default {
 		await this.getPermissions();
 	},
 	methods: {
+		formatName(name) {
+			return name
+				.split("_")
+				.join(" ")
+				.toUpperCase();
+		},
 		setDefaultForm() {
 			return {
 				name: "",
 				description: "",
-				parent: null,
+				permissions: {
+					invite_peers: false,
+					qa: false,
+					stage: false,
+					categories: false,
+					positions: false,
+				},
 			};
 		},
 		async getPermissions() {
@@ -121,6 +154,17 @@ export default {
 				this.$toasted.success("Permission Deleted");
 			}
 		},
+		async createPermission(){
+			const options = {
+				data: this.permissionForm,
+			};
+			const result = await this.getData(this.ENDPOINTS.createPermission, options);
+			if (result) {
+				await this.getPermissions();
+				this.permissionForm = this.setDefaultForm();
+				this.$toasted.success("Category created");
+			}
+		}
 	},
 };
 </script>

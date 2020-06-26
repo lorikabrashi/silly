@@ -1,0 +1,11 @@
+.silly__default-table-description{
+	& .desc > span{
+		margin-left: 10px;
+	}
+	& .permissions ul {
+		margin-top: 20px;
+		& li span {
+			margin-left: 10px;
+		}
+	}
+}
