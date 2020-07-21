@@ -113,9 +113,9 @@ export default {
             this.modalData = category
             this.categoryModal = true
         },
-        closeChangeModal(modal) {
+        closeChangeModal() {
             this.categoryModal = false
-            this.modalData = {};
+			this.modalData = {};
         },
 		cancelDelete() {
 			this.confirmState = false;

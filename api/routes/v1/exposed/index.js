@@ -1,4 +1,1 @@
-module.exports = [
-    require('./get'),
-	require('./post'),
-];
+module.exports = [require('./get'), require('./post')]
