@@ -147,6 +147,7 @@ const userController = {
     },
 
     find: async (qParams = {}, body = {}) => {
+        console.log(qParams);
         qParams = getDefaultQueryParams(qParams)
         const users = await usersModel.find(body, { password: 0, __v: 0 }, { skip: qParams.offset, limit: qParams.limit })
 

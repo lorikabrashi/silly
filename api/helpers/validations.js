@@ -3,16 +3,43 @@ const ErrorWithStatusCode = require('./ErrorWithStatusCode')
 const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$.!%*#?&])[A-Za-z\d@$.!%*#?&]{8,}$/
 const passwordMessage = 'Password should not be empty, minimum six characters, at least one letter, one number and one special character'
 
+// prettier-ignore
 module.exports = {
-    refreshToken: [check('refreshToken', 'Refresh Token cannot be empty').notEmpty()],
-    password: [check('password', passwordMessage).exists().isLength({ min: 6 }).matches(passwordRegex)],
-    email: [check('email', 'Email field must be a valid email address!').isEmail()],
-    users: [check('username', 'Username cannot be empty').notEmpty(), check('email', 'Email field must be a valid email address!').isEmail(), check('password', passwordMessage).exists().isLength({ min: 6 }).matches(passwordRegex)],
-    profile: [check('first_name', 'First name cannot be empty').notEmpty(), check('last_name', 'Last Name cannot be empty').notEmpty()],
-    licenses: [check('name', 'License name cannot be empty').notEmpty(), check('description', 'License description cannot be empty').notEmpty()],
-    categories: [check('name', 'Category name cannot be empty').notEmpty()],
-    addRemoveCategories: [check('projectId', 'projectId cannot be empty and must be a project ID').isMongoId().notEmpty(), check('catIds', 'Categories not selected').isArray().notEmpty()],
-    permissions: [check('name', 'Permission name cannot be empty').notEmpty(), check('description', 'Permission description cannot be empty').notEmpty(), check('permissions', 'At least one permission needs to be set').notEmpty(), check('permissions.*', 'Permissions need to be boolean').isBoolean()],
+    refreshToken: [
+        check('refreshToken', 'Refresh Token cannot be empty').notEmpty()
+    ],
+    password: [
+        check('password', passwordMessage).exists().isLength({ min: 6 }).matches(passwordRegex)
+    ],
+    email: [
+        check('email', 'Email field must be a valid email address!').isEmail()
+    ],
+    users: [
+        check('username', 'Username cannot be empty').notEmpty(),
+        check('email', 'Email field must be a valid email address!').isEmail(),
+        check('password', passwordMessage).exists().isLength({ min: 6 }).matches(passwordRegex)
+    ],
+    profile: [
+        check('first_name', 'First name cannot be empty').notEmpty(),
+        check('last_name', 'Last Name cannot be empty').notEmpty()
+    ],
+    licenses: [
+        check('name', 'License name cannot be empty').notEmpty(),
+        check('description', 'License description cannot be empty').notEmpty()
+    ],
+    categories: [
+        check('name', 'Category name cannot be empty').notEmpty()
+    ],
+    addRemoveCategories: [
+        check('projectId', 'projectId cannot be empty and must be a project ID').isMongoId().notEmpty(),
+        check('catIds', 'Categories not selected').isArray().notEmpty()
+    ],
+    permissions: [
+        check('name', 'Permission name cannot be empty').notEmpty(),
+        check('description', 'Permission description cannot be empty').notEmpty(),
+        check('permissions', 'At least one permission needs to be set').notEmpty(),
+        check('permissions.*', 'Permissions need to be boolean').isBoolean()
+    ],
     forum: [
         check('content', 'Content cannot be empty').notEmpty(),
         check('user', "user cannot be empty and must be an id reference of 'users'").notEmpty().isMongoId(), // TODO - Get from access token
@@ -20,7 +47,11 @@ module.exports = {
         check('config.type', "Config type must be: 'project', 'position' or 'child'").isIn(['project', 'position', 'child']),
         check('config.parent_id', "Config parent_id cannot be empty and must be an id reference of 'project', 'position' or 'forum'").notEmpty().isMongoId(),
     ],
-    positions: [check('type', 'Position type cannot be empty').notEmpty(), check('description', 'Position description cannot be empty').notEmpty(), check('parent_id', 'parent_id cannot be empty and must be an id reference to projects').notEmpty().isMongoId()],
+    positions: [
+        check('type', 'Position type cannot be empty').notEmpty(),
+        check('description', 'Position description cannot be empty').notEmpty(),
+        check('parent_id', 'parent_id cannot be empty and must be an id reference to projects').notEmpty().isMongoId()
+    ],
     projects: [
         check('name', 'Project name cannot be empty').notEmpty(),
         check('description', 'Project description cannot be empty').notEmpty(),
@@ -42,6 +73,7 @@ module.exports = {
         check('response', 'Response cannot be empty and needs to be a boolean value').notEmpty().isBoolean(),
         check('projectId', 'projectId cannot be empty and must be an id reference to one of your projects').notEmpty().isMongoId(),
     ],
+
     /**
      * @param { string } password - Validate password
      */

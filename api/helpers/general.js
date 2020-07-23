@@ -70,6 +70,7 @@ module.exports = {
         }
     },
     isEmptyObject: (obj) => {
+        if (!obj) throw new Error('No object provided!')
         return !Object.keys(obj).length
     },
     createFolder: (dir) => {
@@ -109,8 +110,8 @@ module.exports = {
     getDefaultQueryParams: (params) => {
         let { offset, limit, fields } = params
 
-        offset = parseInt(offset) || 0
-        limit = parseInt(limit) || 50
+        offset = Math.abs(parseInt(offset)) || 0
+        limit = Math.abs(parseInt(limit)) || 50
         limit = Math.min(limit, 50)
 
         fields = fields ? fields.split(',') : []
