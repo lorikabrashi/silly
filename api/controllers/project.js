@@ -156,7 +156,6 @@ module.exports = {
     find: async (qParams) => {
         qParams = getDefaultQueryParams(qParams)
         const projects = await projectModel.find({}, { __v: 0 }, { skip: qParams.offset, limit: qParams.limit })
-
         return Array.from(projects).map((project) => {
             return extractFields(project, qParams.fields)
         })
@@ -164,6 +163,7 @@ module.exports = {
     findById: async (id, qParams) => {
         qParams = getDefaultQueryParams(qParams)
         const project = await projectModel.findById(id, { __v: 0 }, { skip: qParams.offset, limit: qParams.limit })
+        console.log(project)
         return extractFields(project, qParams.fields)
     },
     update: async (id, params) => {

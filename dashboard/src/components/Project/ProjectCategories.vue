@@ -3,7 +3,7 @@
 		<ConfirmModal :obj="modalData" :modalState="confirmState" :modalMessage="confirmMessage" @reject="cancelDelete" @accept="removeCategories" />
 		<AddCategoryModal :modalState="addCategoryModalState" :categoryList="categoryList" @closed="toggleAddCategoryModal" @addCategories="addCategories" />
 
-		<div class="text-md-right mt-sm silly__categories-buttons">
+		<div class="text-md-right mt-sm silly__add_remove-buttons">
 			<b-button variant="success" @click="toggleAddCategoryModal">Add new</b-button>
 			<b-button variant="danger" @click="removeCategoriesModal">Remove</b-button>
 		</div>
@@ -125,10 +125,4 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.silly__categories-buttons {
-	margin-bottom: 30px;
-	.btn {
-		margin-right: 10px;
-	}
-}
 </style>

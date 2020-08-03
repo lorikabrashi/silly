@@ -131,4 +131,4 @@ export default {
 	},
 };
 </script>
-<style src="./Projects.scss" lang="scss" scoped />
+<style src="./Projects.scss" lang="scss" />

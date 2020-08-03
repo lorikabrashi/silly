@@ -39,7 +39,7 @@ const autoPopulateChildren = function (next) {
     this.populate('categories', ['-children', '-parent', '-__v'])
     this.populate('created_from', ['-password', '-__v'])
     this.populate('positions', '-__v')
-    this.populate('permissions', 'name')
+    this.populate('permissions')
     this.populate('peers.user', ['username', 'email', '-profile'])
     this.populate('peers.permission', 'name')
 
