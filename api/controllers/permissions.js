@@ -3,6 +3,14 @@ const { validateReqFields } = require('../helpers/validations')
 const { extractFields, getDefaultQueryParams } = require('../helpers/general')
 
 module.exports = {
+    getDefaultPermissions: async (qParams) => {
+        qParams = getDefaultQueryParams(qParams)
+        const query = { 'config.type': 'Default' }
+        const permissions = await permissionModel.find({}, { __v: 0 }, { skip: qParams.offset, limit: qParams.limit })
+        return Array.from(permissions).map((permission) => {
+            return extractFields(permission, qParams.fields)
+        })
+    },
     createCustom: async (params) => {
         validateReqFields(params, ['parent_id'])
         const { parent_id } = params

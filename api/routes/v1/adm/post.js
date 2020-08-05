@@ -8,13 +8,25 @@ const { sendResponse } = require('../../../helpers/general')
 const validations = require('../../../helpers/validations')
 
 router.post(
-    '/add-category',
+    'remove-permission',
     catchException(auth.adm.validateAccessToken),
-    validations.addRemoveCategories,
+    validations.addRemoveProjectFields,
     catchException(async (req, res) => {
         validations.checkResults(req)
-        const { projectId, catIds } = req.body
-        const results = await controllers.projects.addCategories(projectId, catIds)
+        const { projectId, ids } = req.body
+
+        // const results = await controllers.projects.removeCategories(projectId, ids)
+        res.json(sendResponse({projectId, ids}))
+    }))
+
+router.post(
+    '/add-category',
+    catchException(auth.adm.validateAccessToken),
+    validations.addRemoveProjectFields,
+    catchException(async (req, res) => {
+        validations.checkResults(req)
+        const { projectId, ids } = req.body
+        const results = await controllers.projects.addCategories(projectId, ids)
         res.json(sendResponse(results))
     })
 )
@@ -22,11 +34,11 @@ router.post(
 router.post(
     '/remove-category',
     catchException(auth.adm.validateAccessToken),
-    validations.addRemoveCategories,
+    validations.addRemoveProjectFields,
     catchException(async (req, res) => {
         validations.checkResults(req)
-        const { projectId, catIds } = req.body
-        const results = await controllers.projects.removeCategories(projectId, catIds)
+        const { projectId, ids } = req.body
+        const results = await controllers.projects.removeCategories(projectId, ids)
         res.json(sendResponse(results))
     })
 )

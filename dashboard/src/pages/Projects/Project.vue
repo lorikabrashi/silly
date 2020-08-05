@@ -14,7 +14,7 @@
             </b-tab>
 
             <b-tab title="Permissions" active>
-                <Permissions :projectPermissions="permissions" />
+                <Permissions :projectPermissions="projectPermissions" :permissions="permissions"  @removePermissions="removePermissions" />
             </b-tab>
 
             <b-tab title="Positions"> </b-tab>
@@ -23,9 +23,6 @@
                 <!-- TODO RAPORTS -->
             </b-tab>
         </b-tabs>
-        <!-- <pre class="codeSnippet">
-            {{ project }}
-        </pre> -->
     </div>
 </template>
 
@@ -52,7 +49,8 @@ export default {
             projectCategories: [],
             categories: [],
 			peers: [],
-			permissions: []
+            projectPermissions: [],
+            permissions: []
         }
     },
     props: ['projectId'],
@@ -63,12 +61,33 @@ export default {
         async setupData() {
             await this.getProjectData()
             await this.getCategories()
+            await this.getPermissions()
+        },
+        async removePermissions(options, message){
+            const result = await this.getData(this.ENDPOINTS.removePermission, options)
+            if (result) {
+                this.$toasted.success(message)
+                this.setupData()
+            }
+        },
+        async addPermissions(options, message){
+            const result = await this.getData(this.ENDPOINTS.addPermission, options)
+            if (result) {
+                this.$toasted.success(message)
+                this.setupData()
+            }
+        },
+        async getPermissions(){
+            const options = {}
+            const result = await this.getData(this.ENDPOINTS.getPermissions, options)
+            if (result) {
+                this.permissions = result
+            }
         },
         async removeCategories(options, message) {
             const result = await this.getData(this.ENDPOINTS.removeCategory, options)
             if (result) {
                 this.$toasted.success(message)
-
                 this.setupData()
             }
         },
@@ -146,8 +165,7 @@ export default {
             this.peers = project.peers
         },
         setPermissions(project) {
-			console.log(project)
-            this.permissions = project.permissions
+            this.projectPermissions = project.permissions
         },
         setPositions() {},
         /* TODO */

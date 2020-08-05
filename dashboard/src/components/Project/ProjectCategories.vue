@@ -1,5 +1,6 @@
 <template>
 	<div class="Silly__project-categories">
+		
 		<ConfirmModal :obj="modalData" :modalState="confirmState" :modalMessage="confirmMessage" @reject="cancelDelete" @accept="removeCategories" />
 		<AddCategoryModal :modalState="addCategoryModalState" :categoryList="categoryList" @closed="toggleAddCategoryModal" @addCategories="addCategories" />
 
@@ -7,13 +8,13 @@
 			<b-button variant="success" @click="toggleAddCategoryModal">Add new</b-button>
 			<b-button variant="danger" @click="removeCategoriesModal">Remove</b-button>
 		</div>
-		<v-client-table class="silly__default-table has_checkbox" :data="catTable.data" :columns="catTable.columns" :options="catTable.options">
+		<v-client-table class="silly__default-table has_checkbox" :data="catTable.data" :columns="catTable.columns" :options="catTable.options" :key="renderTableKey">
 			<template slot="h__select">
 				<span class="VueTables__heading">Check All </span>
-				<span class="pull-right"><b-form-checkbox type="checkbox" @change="categoriesSelectAll($event)"/></span>
+				<span class="pull-right"><b-form-checkbox type="checkbox" @change="selectAll($event)"/></span>
 			</template>
 			<template slot="select" slot-scope="props">
-				<b-form-checkbox :checked="catTable.allSelected" @id="`cat_${props.row._id}`" @change="toggleSelectCategory(props.row._id)" />
+				<b-form-checkbox :checked="catTable.allSelected" @id="{props.row._id}" @change="toggleSelect(props.row._id)" />
 			</template>
 			<template slot="actions" slot-scope="props">
 				<b-button size="xs" variant="danger" @click="removeCategoryModal(props.row._id, props.row.name)">Remove</b-button>
@@ -28,10 +29,11 @@ export default {
 	name: "ProjectCategories",
 	components: {
 		ConfirmModal,
-		AddCategoryModal,
+		AddCategoryModal
 	},
 	data() {
 		return {
+			renderTableKey: 0,
 			confirmState: false,
 			addCategoryModalState: false,
 			confirmMessage: "",
@@ -72,13 +74,14 @@ export default {
 			};
 			let message = "";
 			if ("ids" in data) {
-				options.data.catIds = data.ids;
-				message = `Deleted ${data.ids.length} categories`;
+				options.data.ids = data.ids;
+				message = `Remove ${data.ids.length} categories`;
 			} else {
-				options.data.catIds = [data.id];
-				message = `Category Deleted`;
+				options.data.ids = [data.id];
+				message = `Category removed`;
 			}
-
+			this.selectAll(false)
+			this.forceRerenderTable()
 			this.$emit("removeCategories", options, message);
 		},
 		cancelDelete() {
@@ -86,12 +89,12 @@ export default {
 			this.confirmMessage = "";
 		},
 		removeCategoryModal(id, name) {
-			this.confirmMessage = `Are you sure you want to delete ${name}`;
+			this.confirmMessage = `Are you sure you want to remove ${name}`;
 			this.modalData = { id };
 			this.confirmState = true;
 		},
 		removeCategoriesModal() {
-			this.confirmMessage = `Are you sure you want to delete selected categories`;
+			this.confirmMessage = `Are you sure you want to remove selected categories`;
 			const ids = this.catTable.data.filter((e) => e.selected === true).map((e) => e._id);
 			this.modalData.ids = ids;
 			this.confirmState = true;
@@ -106,21 +109,24 @@ export default {
 			let message = "";
 			const ids = data.map((elem) => elem._id);
 			if (ids.length) {
-				options.data.catIds = ids;
+				options.data.ids = ids;
 				message = "New categories added!";
 				this.$emit("addCategories", options, message);
 			}
 		},
-		categoriesSelectAll(value) {
+		selectAll(value) {
 			this.catTable.data.forEach((elem) => {
 				elem.selected = value;
 			});
 			this.catTable.allSelected = value;
 		},
-		toggleSelectCategory(catId) {
-			const index = this.catTable.data.findIndex((elem) => elem._id === catId);
+		toggleSelect(id) {
+			const index = this.catTable.data.findIndex((elem) => elem._id === id);
 			this.catTable.data[index].selected = !this.catTable.data[index].selected;
 		},
+		forceRerenderTable(){
+			this.renderTableKey += 1
+		}
 	},
 };
 </script>

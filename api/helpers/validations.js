@@ -30,9 +30,9 @@ module.exports = {
     categories: [
         check('name', 'Category name cannot be empty').notEmpty()
     ],
-    addRemoveCategories: [
+    addRemoveProjectFields: [
         check('projectId', 'projectId cannot be empty and must be a project ID').isMongoId().notEmpty(),
-        check('catIds', 'Categories not selected').isArray().notEmpty()
+        check('ids', 'id Fields not selected').isArray().notEmpty()
     ],
     permissions: [
         check('name', 'Permission name cannot be empty').notEmpty(),

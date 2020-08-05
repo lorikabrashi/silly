@@ -13,10 +13,6 @@
 				</v-client-table>
 			</b-tab>
 		</b-tabs>
-
-        <pre class="codeSnippet">
-            {{projectsData}}    
-        </pre>
 	</div>
 </template>
 <script>

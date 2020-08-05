@@ -53,6 +53,15 @@ router.get(
 )
 
 router.get(
+    '/get-default-permissions/',
+    catchException(auth.adm.validateAccessToken),
+    catchException(async (req, res) => {
+        const results = await controllers.permissions.getDefaultPermissions(req.query)
+        res.json(sendResponse(results))
+    })
+)
+
+router.get(
     '/:resource',
     catchException(auth.adm.validateAccessToken),
     catchException(async (req, res) => {
