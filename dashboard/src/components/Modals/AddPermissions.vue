@@ -1,12 +1,12 @@
 <template>
-    <b-modal ref="addCategoryModal" @hide="close" title="Add Category" v-model="state" body-bg-variant="white">
+    <b-modal ref="addPermissionsModal" @hide="close" title="Add Role" v-model="state" body-bg-variant="white">
         <b-container>
             <b-row>
                 <b-col xs="12" lg="12">
-                    <Widget class="categoryWidget">
+                    <Widget class="permissionsWidget">
                         <form>
-                            <div class="col form-group  abc-checkbox abc-checkbox-primary">
-                                <div class="group" v-for="item in categories" :key="item._id">
+                            <div class="col form-group abc-checkbox abc-checkbox-primary">
+                                <div class="group" v-for="item in permssions" :key="item._id">
                                     <input :disabled="item.disabled" v-model="item.onProject" :value="item._id" type="checkbox" :id="item._id" />
                                     <label :for="item._id">{{ item.name }}</label>
                                 </div>
@@ -17,32 +17,32 @@
             </b-row>
         </b-container>
         <template v-slot:modal-footer>
-            <b-button variant="info" @click="$refs.addCategoryModal.hide()">Cancel</b-button>
-            <b-button variant="success" @click="addCategory">Add Category</b-button>
+            <b-button variant="info" @click="$refs.addPermissionsModal.hide()">Cancel</b-button>
+            <b-button variant="success" @click="addPermission">Add Role</b-button>
         </template>
     </b-modal>
 </template>
 
 <script>
 export default {
-    name: 'AddCategory',
+    name: 'AddPermssions',
     data() {
         return {
             state: false,
-            categories: [],
+            permssions: [],
         }
     },
     props: {
         modalState: Boolean,
-        projectCategories: Array,
-        categoryList: Array,
+        projectPermissions: Array,
+        permissionsList: Array,
     },
     watch: {
         modalState: function(newVal) {
             this.state = newVal
         },
-        categoryList: function(newVal) {
-            this.categories = newVal
+        permissionsList: function(newVal) {
+            this.permssions = newVal
         },
     },
     methods: {
@@ -50,12 +50,11 @@ export default {
             this.state = false
             this.$emit('closed')
         },
-        addCategory() {
-            const addedCategories = this.categories.filter((elem) => !elem.disabled && elem.onProject)
-            this.$emit('addCategories', addedCategories)
-            this.$refs.addCategoryModal.hide()
+        addPermission() {
+            this.$refs.addPermissionsModal.hide()
         },
     },
 }
 </script>
-<style lang="scss" scoped></style>
+
+<style></style>

@@ -161,7 +161,7 @@ const router = new Router({
 			]
 		},
 		{
-			path: "/permissions",
+			path: "/roles",
 			name: "Layout",
 			component: Layout,
 			meta: {

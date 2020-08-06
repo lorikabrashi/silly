@@ -11,7 +11,7 @@
 				<NavLink :activeItem="activeItem" header="Users" link="/users" iconName="fi flaticon-users" index="users" isHeader />
 				<NavLink :activeItem="activeItem" header="Projects" link="/projects" iconName="las la-archive" index="projects" isHeader />
 				<NavLink :activeItem="activeItem" header="Categories" link="/categories" iconName="las la-tags" index="categories" isHeader />
-				<NavLink :activeItem="activeItem" header="Permissions" link="/permissions" iconName="las la-user-lock" index="permissions" isHeader />
+				<NavLink :activeItem="activeItem" header="Roles" link="/roles" iconName="las la-user-lock" index="roles" isHeader />
 			</ul>
 			<p></p>
 			<h5 class="navTitle">

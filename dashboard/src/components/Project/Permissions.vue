@@ -1,14 +1,15 @@
 <template>
     <div class="Silly__project-permissions">
         <ConfirmModal :obj="modalData" :modalState="confirmState" :modalMessage="confirmMessage" @reject="cancelDelete" @accept="removePermissions" />
+        <AddPermissionsModal :modalState="addPermissionsModalState" :permissionsList="defaultPermissions" @closed="toggleAddPermissionsModal" @addCategories="addPermissions"  />
         <div class="text-md-right mt-sm silly__add_remove-buttons">
-            <b-button variant="success" @click="addPermissions">Add new</b-button>
+            <b-button variant="info" @click="createPermissions">Create custom</b-button>
+            <b-button variant="success" @click="toggleAddPermissionsModal">Add new</b-button>
             <b-button variant="danger" @click="removePermissionsModal">Remove</b-button>
         </div>
         <v-client-table class="silly__default-table has_checkbox" :data="permissionsTable.data" :columns="permissionsTable.columns" :options="permissionsTable.options" :key="renderTableKey">
             <template slot="h__select">
-                <span class="VueTables__heading">Check All </span>
-                <span class="pull-right"><b-form-checkbox type="checkbox" @change="selectAll($event)"/></span>
+                <span><b-form-checkbox type="checkbox" @change="selectAll($event)"/></span>
             </template>
             <template slot="select" slot-scope="props">
                 <b-form-checkbox :checked="permissionsTable.allSelected" @id=";`${props.row._id}`" @change="toggleSelect(props.row._id)" />
@@ -22,16 +23,24 @@
 </template>
 <script>
 import ConfirmModal from '@/components/Modals/Confirm'
+import AddPermissionsModal from '@/components/Modals/AddPermissions'
+    
+const permissionsLabelTxt = function(val) {
+    return val ? "Enabled" : 'Disabled'
+}
+
 export default {
     name: '',
     components: {
         ConfirmModal,
+        AddPermissionsModal
     },
     data() {
         return {
             renderTableKey: 0,
             confirmState: false,
-			confirmMessage: '',
+            confirmMessage: '',
+            addPermissionsModalState: false,
 			defaultPermissions: [],
             modalData: {},
             permissionsTable: {
@@ -53,19 +62,19 @@ export default {
 							return new Date(row.createdAt).toLocaleString();
 						},
 						invite_peers(h, row){
-							return row.permissions.invite_peers ? "Enabled" : 'Disabled'
-						},
+                            return permissionsLabelTxt(row.permissions.invite_peers)
+                        },
 						qa(h, row){
-							return row.permissions.qa ? "Enabled" : 'Disabled'
+							return permissionsLabelTxt(row.permissions.qa)
 						},
 						stage(h, row){
-							return row.permissions.stage ? "Enabled" : 'Disabled'
+							return permissionsLabelTxt(row.permissions.stage)
 						},
 						categories(h, row){
-							return row.permissions.categories ? "Enabled" : 'Disabled'
+							return permissionsLabelTxt(row.permissions.categories)
 						},
 						positions(h, row){
-							return row.permissions.positions ? "Enabled" : 'Disabled'
+							return permissionsLabelTxt(row.permissions.positions)
 						}
 					},
                 },
@@ -85,8 +94,11 @@ export default {
 		}
     },
     methods: {
-        addPermissions() {},
-
+        toggleAddPermissionsModal() {
+            this.addPermissionsModalState = !this.addPermissionsModalState;
+        },
+        createPermissions(){},
+        addPermissions(){},
         removePermissions(data) {
             const options = {
                 data: { projectId: this.projectId },

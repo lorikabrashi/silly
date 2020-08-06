@@ -1,12 +1,13 @@
 <template>
     <b-container>
         <ConfirmModal :obj="modalData" :modalState="confirmState" :modalMessage="confirmMessage" @reject="cancelDelete" @accept="deletePermission" />
+        <!-- TODO: Change permissions -->
         <b-row>
             <b-col xs="12" lg="4">
                 <Widget>
                     <form @submit.prevent="createPermission">
                         <legend>
-                            <span> <strong>Create</strong> Permission </span>
+                            <span><strong>Create</strong> Role</span>
                         </legend>
                         <div class="col">
                             <label for="name" class="col-4 col-form-label pl-0">Name</label>

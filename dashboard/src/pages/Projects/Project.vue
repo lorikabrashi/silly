@@ -13,7 +13,7 @@
                 <ProjectPeers :projectPeers="peers" />
             </b-tab>
 
-            <b-tab title="Permissions" active>
+            <b-tab title="Roles" active>
                 <Permissions :projectPermissions="projectPermissions" :permissions="permissions"  @removePermissions="removePermissions" />
             </b-tab>
 

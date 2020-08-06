@@ -17,9 +17,6 @@
 	}
 
 	&.has_checkbox {
-		tr td:first-child {
-			width: 150px;
-		}
 		.custom-checkbox {
 			.custom-control-label::before {
 				border-radius: 0;

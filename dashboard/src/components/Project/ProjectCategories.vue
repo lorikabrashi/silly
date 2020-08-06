@@ -10,8 +10,7 @@
 		</div>
 		<v-client-table class="silly__default-table has_checkbox" :data="catTable.data" :columns="catTable.columns" :options="catTable.options" :key="renderTableKey">
 			<template slot="h__select">
-				<span class="VueTables__heading">Check All </span>
-				<span class="pull-right"><b-form-checkbox type="checkbox" @change="selectAll($event)"/></span>
+				<span><b-form-checkbox type="checkbox" @change="selectAll($event)"/></span>
 			</template>
 			<template slot="select" slot-scope="props">
 				<b-form-checkbox :checked="catTable.allSelected" @id="{props.row._id}" @change="toggleSelect(props.row._id)" />
