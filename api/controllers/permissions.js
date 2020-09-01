@@ -6,7 +6,7 @@ module.exports = {
     getDefaultPermissions: async (qParams) => {
         qParams = getDefaultQueryParams(qParams)
         const query = { 'config.type': 'Default' }
-        const permissions = await permissionModel.find({}, { __v: 0 }, { skip: qParams.offset, limit: qParams.limit })
+        const permissions = await permissionModel.find(query, { __v: 0 }, { skip: qParams.offset, limit: qParams.limit })
         return Array.from(permissions).map((permission) => {
             return extractFields(permission, qParams.fields)
         })

@@ -1,7 +1,8 @@
 <template>
     <div class="Silly__project-permissions">
         <ConfirmModal :obj="modalData" :modalState="confirmState" :modalMessage="confirmMessage" @reject="cancelDelete" @accept="removePermissions" />
-        <AddPermissionsModal :modalState="addPermissionsModalState" :permissionsList="defaultPermissions" @closed="toggleAddPermissionsModal" @addCategories="addPermissions"  />
+        <AddPermissionsModal :modalState="addPermissionsModalState" :permissionsList="defaultPermissions" @closed="toggleAddPermissionsModal" @addPermissions="addPermissions"  />
+
         <div class="text-md-right mt-sm silly__add_remove-buttons">
             <b-button variant="info" @click="createPermissions">Create custom</b-button>
             <b-button variant="success" @click="toggleAddPermissionsModal">Add new</b-button>
@@ -82,7 +83,8 @@ export default {
         }
     },
     props: {
-		projectPermissions: Array,
+        projectPermissions: Array,
+        projectId: String,
 		permissions: Array
     },
     watch: {
@@ -98,7 +100,19 @@ export default {
             this.addPermissionsModalState = !this.addPermissionsModalState;
         },
         createPermissions(){},
-        addPermissions(){},
+
+        addPermissions(data){
+            const options = {
+				data: { projectId: this.projectId },
+            };
+            let message = "";
+			const ids = data.map((elem) => elem._id);
+			if (ids.length) {
+				options.data.ids = ids;
+				message = "New permissions added!";
+				this.$emit("addPermissions", options, message);
+			}
+        },
         removePermissions(data) {
             const options = {
                 data: { projectId: this.projectId },

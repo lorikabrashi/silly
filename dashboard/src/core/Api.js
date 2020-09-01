@@ -17,6 +17,7 @@ export const ENDPOINTS = Object.freeze({
     removeCategory: { url: 'remove-category', method: 'POST' },
     addCategory: { url: 'add-category', method: 'POST' },
     removePermission: { url: 'remove-permission', method: 'POST' },
+    addPermission: { url: 'add-permission', method: 'POST' },
 
     /* Categories */
     getCategories: { url: 'get-categories', method: 'GET' },

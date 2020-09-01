@@ -51,6 +51,8 @@ export default {
             this.$emit('closed')
         },
         addPermission() {
+            const addedPermissions = this.permssions.filter((elem) => !elem.disabled && elem.onProject)
+            this.$emit('addPermissions', addedPermissions)
             this.$refs.addPermissionsModal.hide()
         },
     },

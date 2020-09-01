@@ -8,6 +8,20 @@ const { sendResponse } = require('../../../helpers/general')
 const validations = require('../../../helpers/validations')
 
 router.post(
+    'add-permission',
+    catchException(auth.adm.validateAccessToken),
+    validations.addRemoveProjectFields,
+    catchException(async (req, res) => {
+        validations.checkResults(req)
+        const { projectId, ids } = req.body
+
+        // TODO
+        // const results = await controllers.projects.addPermission(projectId, ids)
+        res.json(sendResponse({ projectId, ids }))
+    })
+)
+
+router.post(
     'remove-permission',
     catchException(auth.adm.validateAccessToken),
     validations.addRemoveProjectFields,
@@ -15,9 +29,11 @@ router.post(
         validations.checkResults(req)
         const { projectId, ids } = req.body
 
-        // const results = await controllers.projects.removeCategories(projectId, ids)
-        res.json(sendResponse({projectId, ids}))
-    }))
+        // TODO
+        // const results = await controllers.projects.removePermission(projectId, ids)
+        res.json(sendResponse({ projectId, ids }))
+    })
+)
 
 router.post(
     '/add-category',

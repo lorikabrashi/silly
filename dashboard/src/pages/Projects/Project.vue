@@ -14,7 +14,7 @@
             </b-tab>
 
             <b-tab title="Roles" active>
-                <Permissions :projectPermissions="projectPermissions" :permissions="permissions"  @removePermissions="removePermissions" />
+                <Permissions :projectId="projectId" :projectPermissions="projectPermissions" :permissions="permissions"  @removePermissions="removePermissions" @addPermissions="addPermissions" />
             </b-tab>
 
             <b-tab title="Positions"> </b-tab>
@@ -81,6 +81,15 @@ export default {
             const options = {}
             const result = await this.getData(this.ENDPOINTS.getPermissions, options)
             if (result) {
+                result.forEach((elem) => {
+                    if(this.project.permissions.some((e) => e._id === elem._id)){
+                        elem.onProject = true
+                        elem.disabled = true
+                        return
+                    }
+                    elem.onProject = false
+                    elem.disabled = false
+                })
                 this.permissions = result
             }
         },
